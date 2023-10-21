@@ -297,6 +297,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AudioManager: {fileID: 1331531352}
+  MapSize: {x: 10, y: 15}
   entities: []
 --- !u!4 &1331531351
 Transform:
@@ -327,8 +328,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AudioClipPlayer: {fileID: 1331531354}
   OST: {fileID: 1331531353}
-  AudioClipsType: []
-  AudioClipsDirection: []
+  AudioClipsType:
+  - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
+  - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
+  - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
+  - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
+  AudioClipsDirection:
+  - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
+  - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
+  - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
+  - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
+  EntityOrNotAudioClips:
+  - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
+  - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
 --- !u!82 &1331531353
 AudioSource:
   m_ObjectHideFlags: 0

@@ -9,6 +9,8 @@ public class GameManager : MonoBehaviour
     public TurnManager TurnManager;
     public AudioManager AudioManager;
 
+    [SerializeField] private Vector2Int MapSize = new();
+
     //Will come in handy Later. Unless you'd prefer a more elaborate Event System.
     public event Action OnGameOver;
 
@@ -18,7 +20,7 @@ public class GameManager : MonoBehaviour
     {
         AudioManager = GetComponent<AudioManager>();
 
-        GridManager = new(3, 5, this);
+        GridManager = new(MapSize.x, MapSize.y, this);
         GridManager.OnMoveEntity += AudioManager.OnMovement;
 
         //Just to make sure the player is at the start, for convenience.

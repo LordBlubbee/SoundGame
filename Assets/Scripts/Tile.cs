@@ -17,6 +17,7 @@ public class Tile
         Position = new Vector2Int(x, y);
     }
 
+    public bool HasEntity = false;
     public TileType Type = TileType.Standard;
 
     public List<Entity> EntitiesInTile = new();
