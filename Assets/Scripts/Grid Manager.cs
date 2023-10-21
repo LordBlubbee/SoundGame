@@ -20,7 +20,7 @@ public class GridManager
         GenerateGrid();
     }
 
-    public void MoveEntityInGrid(Entity entityToMove, Vector2Int Movement)
+    public void MoveEntityInGrid(Entity entityToMove, Vector2Int Movement, bool player = false)
     {
         Vector2Int futurePosition = entityToMove.Position + Movement;
         Tile currentTile = tiles[entityToMove.Position.x, entityToMove.Position.y];
@@ -47,7 +47,8 @@ public class GridManager
                 SoundObject soundObject = new()
                 {
                     Direction = Direction.Left,
-                    Type = tiles[position.x - 1, position.y].Type
+                    Type = tiles[position.x - 1, position.y].Type,
+                    HasOtherEntity = tiles[position.x - 1, position.y].EntitiesInTile.Count > 0
                 };
                 soundObjects.Add(soundObject);
             }
@@ -59,7 +60,8 @@ public class GridManager
                 SoundObject soundObject = new()
                 {
                     Direction = Direction.Right,
-                    Type = tiles[position.x - 1, position.y].Type
+                    Type = tiles[position.x - 1, position.y].Type,
+                    HasOtherEntity = tiles[position.x - 1, position.y].EntitiesInTile.Count > 0
                 };
                 soundObjects.Add(soundObject);
             }
@@ -71,7 +73,8 @@ public class GridManager
                 SoundObject soundObject = new()
                 {
                     Direction = Direction.Down,
-                    Type = tiles[position.x - 1, position.y].Type
+                    Type = tiles[position.x - 1, position.y].Type,
+                    HasOtherEntity = tiles[position.x - 1, position.y].EntitiesInTile.Count > 0
                 };
                 soundObjects.Add(soundObject);
             }
@@ -83,7 +86,8 @@ public class GridManager
                 SoundObject soundObject = new()
                 {
                     Direction = Direction.Up,
-                    Type = tiles[position.x - 1, position.y].Type
+                    Type = tiles[position.x - 1, position.y].Type,
+                    HasOtherEntity = tiles[position.x - 1, position.y].EntitiesInTile.Count > 0
                 };
                 soundObjects.Add(soundObject);
             }

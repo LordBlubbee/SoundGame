@@ -18,6 +18,8 @@ public class SoundObject
     public List<AudioClip> AudioClipsType = new();
     public List<AudioClip> AudioClipsDirection = new();
 
+    public bool HasOtherEntity = false;
+
     public AudioClip AudioClipType => Type switch
     {
         TileType.Standard => AudioClipsType[0],
@@ -46,6 +48,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private List<AudioClip> AudioClipsType = new();
     [Tooltip("Typing is based on Index; Index 0 is Up, 1 Down, 2 Left, 3 Right")]
     [SerializeField] private List<AudioClip> AudioClipsDirection = new();
+    [Tooltip("Defines which audio clip is played when the tile has an entity. Index 0 is entity, 1 is no entity.")]
+    [SerializeField] private List<AudioClip> EntityOrNotAudioClips = new();
 
     private List<SoundObject> soundObjects = new();
     private List<AudioClip> currentAudioClips = new();
@@ -81,11 +85,14 @@ public class AudioManager : MonoBehaviour
 
         foreach (SoundObject soundObject in soundObjects)
         {
-            if (soundObject.AudioClipType == null || currentAudioClips.Contains(soundObject.AudioClipType)) { continue; }
+            if (soundObject.AudioClipType == null) { continue; }
             currentAudioClips.Add(soundObject.AudioClipType);
 
             if (soundObject.AudioClipDirection == null) { continue; }
             currentAudioClips.Add(soundObject.AudioClipDirection);
+
+            if (EntityOrNotAudioClips.Count < 2) { continue; }
+            currentAudioClips.Add(soundObject.HasOtherEntity ? EntityOrNotAudioClips[0] : EntityOrNotAudioClips[1]);
         }
 
         PlayAudio();
