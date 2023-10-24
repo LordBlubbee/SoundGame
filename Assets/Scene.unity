@@ -277,6 +277,7 @@ GameObject:
   - component: {fileID: 1331531352}
   - component: {fileID: 1331531354}
   - component: {fileID: 1331531353}
+  - component: {fileID: 1331531355}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -296,7 +297,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 257678aeaa73da84eb920e89f76bcb89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GridManager:
+    GameStarted: 0
+    GamePaused: 0
   AudioManager: {fileID: 1331531352}
+  indexForRestartingScene: 0
   MapSize: {x: 10, y: 15}
   entities: []
 --- !u!4 &1331531351
@@ -326,21 +331,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c389ca62d734220468baddfc80100d18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AudioClipPlayer: {fileID: 1331531354}
-  OST: {fileID: 1331531353}
-  AudioClipsType:
+  AudioClipPlayer: {fileID: 1331531353}
+  OST: {fileID: 1331531354}
+  audioClipsType:
+  - {fileID: 8300000, guid: 3d0a24ec82cd9ab41a91c435fe91b29e, type: 3}
+  - {fileID: 8300000, guid: ae852305ba8eba349a5ea235ca247aab, type: 3}
+  - {fileID: 8300000, guid: ee520f9647a0bb4498aa25f15198ea8f, type: 3}
+  - {fileID: 8300000, guid: bcfac4f4e5d4b5a42aabde733485fc97, type: 3}
+  audioClipsTypeEnter:
+  - {fileID: 8300000, guid: 6884b65ccc9b77f4f8b0f11d494572dd, type: 3}
+  - {fileID: 8300000, guid: d55680c453b73034a98c4b1166f6e847, type: 3}
+  - {fileID: 8300000, guid: 56ae877efc542244ca1ab1ef52c4e9bd, type: 3}
+  - {fileID: 8300000, guid: 771377efe42159a45922ea8363f92105, type: 3}
+  amountOfDelayBetweenVoicelines: 1.5
+  entityAudioClips:
   - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
-  - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
-  - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
-  - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
-  AudioClipsDirection:
-  - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
-  - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
-  - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
-  - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
-  EntityOrNotAudioClips:
-  - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
-  - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
+  noEntityAudioClips:
+  - {fileID: 8300000, guid: 753eddbae1ff4a54b89350595a859f67, type: 3}
+  audioClipsDirection:
+  - {fileID: 8300000, guid: 43ebd40d09ff37444a219d2b0fe257fe, type: 3}
+  - {fileID: 8300000, guid: 75ecbb6b251687145b6df0b879636ba0, type: 3}
+  - {fileID: 8300000, guid: b4a94b5c85beb494489c9b5b674ac296, type: 3}
+  - {fileID: 8300000, guid: e7517b8baaf4e53459cefabd5c87ace8, type: 3}
+  copyThat:
+  - {fileID: 8300000, guid: d5e11a88868185043ac23803b88103aa, type: 3}
+  - {fileID: 8300000, guid: 15dd0fdc783a24d40bb456425d28949c, type: 3}
+  - {fileID: 8300000, guid: faa30ec9b265eeb4e8a09cc8e091649e, type: 3}
+  - {fileID: 8300000, guid: be12954e6a00a1f44ad976fccf811f56, type: 3}
+  completedAudioClips:
+  - {fileID: 8300000, guid: 325d440f4d594a54f92538ab8e1004d2, type: 3}
+  - {fileID: 8300000, guid: 6cf5f7f57ca92ae438e3d7ec6f885e05, type: 3}
+  - {fileID: 8300000, guid: 6b0f9c0abd3b5424884517c121bff57c, type: 3}
+  - {fileID: 8300000, guid: 7661596a947e3724980bdc07a80f36dd, type: 3}
+  tutorialClip: {fileID: 8300000, guid: 2865be8fd75b30441bff7586a461f0c7, type: 3}
 --- !u!82 &1331531353
 AudioSource:
   m_ObjectHideFlags: 0
@@ -447,9 +470,9 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 85c953b20f0103a479be4d2d91b1f3ab, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.3
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -533,6 +556,55 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1331531355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1331531349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf9d430f8f35769489ac5c649b8219d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  KeyPressed:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1331531350}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: RestartGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  KeyPressedAgain:
+    m_PersistentCalls:
+      m_Calls: []
+  actionToActivate:
+    m_Name: Action To Activate
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 6f44fd52-f1df-4781-ab1d-011f307fcad6
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 733d5dfc-ded1-4175-a047-9886595647f2
+      m_Path: <Keyboard>/escape
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Action To Activate
+      m_Flags: 0
+    m_Flags: 0
+  performDifferentActionWhenPressedBefore: 0
+  affectedByPauze: 0
 --- !u!1 &1380989327
 GameObject:
   m_ObjectHideFlags: 0

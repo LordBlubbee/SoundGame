@@ -3,10 +3,10 @@ using UnityEngine;
 
 public enum TileType
 {
-    Standard = 0,
-    House = 1,
-    River = 2,
-    Woods = 3,
+    Swamp = 0,
+    River = 1,
+    Plains = 2,
+    House = 3,
 }
 
 [System.Serializable]
@@ -18,7 +18,7 @@ public class Tile
     }
 
     public bool HasEntity = false;
-    public TileType Type = TileType.Standard;
+    public TileType Type = TileType.Plains;
 
     public List<Entity> EntitiesInTile = new();
     public Vector2Int Position;

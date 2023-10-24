@@ -10,7 +10,17 @@ public class GridManager
     private int mapWidth;
     private int mapHeight;
 
-    public event Action<List<SoundObject>> OnMoveEntity;
+    public bool GameStarted = false;
+    public bool GamePaused = false;
+
+    public event Action<List<SoundObject>, Tile> OnMoveEntity;
+
+    public void OnGameEnd()
+    {
+        GameStarted = false;
+        tiles = null;
+        OnMoveEntity = null;
+    }
 
     public GridManager(int mapWidth = 3, int mapHeight = 5, GameManager gameManager = null)
     {
@@ -22,6 +32,8 @@ public class GridManager
 
     public void MoveEntityInGrid(Entity entityToMove, Vector2Int Movement, bool player = false)
     {
+        if (!GameStarted || GamePaused) { return; }
+
         Vector2Int futurePosition = entityToMove.Position + Movement;
         Tile currentTile = tiles[entityToMove.Position.x, entityToMove.Position.y];
         currentTile.EntitiesInTile.Remove(entityToMove);
@@ -34,11 +46,11 @@ public class GridManager
         Tile nextTile = tiles[futurePosition.x, futurePosition.y];
         nextTile.EntitiesInTile.Add(entityToMove);
 
-        if (currentTile.EntitiesInTile.Count > 0) { currentTile.HasEntity = true; }
-
         entityToMove.Position = nextTile.Position;
 
-        OnMoveEntity?.Invoke(ReturnNeighbourSoundObjects(entityToMove.Position));
+        OnMoveEntity?.Invoke(ReturnNeighbourSoundObjects(entityToMove.Position), nextTile);
+
+        if (nextTile.EntitiesInTile.Count > 0) { currentTile.HasEntity = true; }
     }
 
     private List<SoundObject> ReturnNeighbourSoundObjects(Vector2Int position)
@@ -111,7 +123,7 @@ public class GridManager
             {
                 Tile tile = new(x, y)
                 {
-                    Type = GetRandomTileType()
+                    Type = x == 0 && y == 0 ? TileType.Plains : GetRandomTileType()
                 };
                 tiles[x, y] = tile;
             }

@@ -9,6 +9,11 @@ public class Player : Entity
         gameManager = FindObjectOfType<GameManager>();
     }
 
+    public void StartGame()
+    {
+        gameManager.GridManager.MoveEntityInGrid(this, new Vector2Int(0, 0));
+    }
+
     private void Update()
     {
         InputHandling();
@@ -18,19 +23,19 @@ public class Player : Entity
     {
         if (!CurrentTurn) { return; }
 
-        if (Input.GetKeyUp(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             PlayerMovement(0, 1);
         }
-        if (Input.GetKeyUp(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
         {
             PlayerMovement(0, -1);
         }
-        if (Input.GetKeyUp(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
             PlayerMovement(-1, 0);
         }
-        if (Input.GetKeyUp(KeyCode.D))
+        if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
         {
             PlayerMovement(1, 0);
         }
