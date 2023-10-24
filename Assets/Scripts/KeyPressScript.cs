@@ -26,7 +26,7 @@ namespace Utility
             actionToActivate.performed += ctx => PerformAction();
             actionToActivate.Enable();
             EventManager.AddListener(EventType.Pause, () => gamePaused = true);
-            EventManager.AddListener(EventType.Pause, () => gamePaused = false);
+            EventManager.AddListener(EventType.UnPause, () => gamePaused = false);
         }
 
         public void PerformAction()
