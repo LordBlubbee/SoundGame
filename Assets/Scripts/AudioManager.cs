@@ -1,7 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Unity.Collections.LowLevel.Unsafe;
+using UnityEditor.XR;
 using UnityEngine;
+using UnityEngine.Events;
 
 public enum Direction
 {
@@ -9,6 +13,149 @@ public enum Direction
     Down,
     Left,
     Right
+}
+
+[Serializable]
+public class AudioClipType
+{
+    public AudioClip audioClip;
+    public bool IsVoiceLine;
+    public bool PlayedSequently;
+}
+
+[Serializable]
+public class AudioEvent
+{
+    public List<AudioClipType> allAudioClips = new();
+
+    [NonSerialized] public bool HasOccured = false;
+    public int AmountOfTurnsRequiredToTrigger;
+
+    private List<AudioSource> audioSources = new();
+    private GameObject audioSourceHolder;
+
+    public UnityEvent OnEventCompleted;
+
+    private List<AudioClip> voiceLines = new();
+    private List<AudioClipType> soundEffects = new();
+
+    public void CheckForActivation(int currentEntityIndex, MonoBehaviour owner, GameObject audioSourceHolder)
+    {
+        if (HasOccured) { return; }
+
+        if (currentEntityIndex >= AmountOfTurnsRequiredToTrigger)
+        {
+            this.audioSourceHolder = audioSourceHolder;
+            Debug.Log("Event Start.");
+            EventManager.InvokeEvent(EventType.EventStart);
+
+            voiceLines.Clear();
+            soundEffects.Clear();
+
+            foreach (AudioClipType audioClipType in allAudioClips)
+            {
+                if (audioClipType.IsVoiceLine)
+                {
+                    voiceLines.Add(audioClipType.audioClip);
+                }
+                else
+                {
+                    soundEffects.Add(audioClipType);
+                }
+            }
+
+            owner.StartCoroutine(SoundEffectsSequence());
+            owner.StartCoroutine(VoiceLinesSequence());
+            HasOccured = true;
+        }
+    }
+
+    private AudioSource CheckForUnusedAudioSource(bool sequence)
+    {
+        foreach (AudioSource source in audioSources)
+        {
+            if (!source.isPlaying)
+            {
+                return source;
+            }
+        }
+
+        if (!sequence && audioSources.Count < 3)
+        {
+            AudioSource source = audioSourceHolder.AddComponent<AudioSource>();
+            audioSources.Add(source);
+            return source;
+        }
+
+        return null;
+    }
+
+    private bool IsAnAudioSourcePlaying()
+    {
+        foreach (AudioSource source in audioSources)
+        {
+            if (source.isPlaying)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private IEnumerator VoiceLinesSequence()
+    {
+        for (int i = 0; i < voiceLines.Count; i++)
+        {
+            if (voiceLines[i] == null) { continue; }
+
+            audioSources[0].clip = voiceLines[i];
+            audioSources[0].Play();
+
+            while (audioSources[0].isPlaying)
+            {
+                yield return null;
+            }
+        }
+    }
+
+    private IEnumerator SoundEffectsSequence()
+    {
+        if (audioSources.Count < 1)
+        {
+            AudioSource source = audioSourceHolder.AddComponent<AudioSource>();
+            audioSources.Add(source);
+        }
+
+        yield return new WaitForSeconds(0.5f);
+
+        for (int i = 0; i < soundEffects.Count; i++)
+        {
+            if (soundEffects[i] == null) { continue; }
+
+            AudioSource source = CheckForUnusedAudioSource(soundEffects[i].PlayedSequently);
+            source.volume = 0.5f;
+
+            if (source != null)
+            {
+                source.clip = soundEffects[i].audioClip;
+                source.Play();
+
+                while (source.isPlaying)
+                {
+                    yield return null;
+                }
+            }
+
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        if (!IsAnAudioSourcePlaying())
+        {
+            EventManager.InvokeEvent(EventType.EventStop);
+            OnEventCompleted?.Invoke();
+        }
+    }
 }
 
 public class SoundObject
@@ -43,6 +190,9 @@ public class AudioManager : MonoBehaviour
     public AudioSource AudioClipPlayer;
     public AudioSource OST;
 
+    [Tooltip("Convenient for testing.")]
+    [SerializeField] private bool skipTutorial = false;
+
     [Tooltip("Typing is based on Index; Index 0 is Swamp, 1 River, 2 Plains, 3 House")]
     [SerializeField] private List<AudioClip> audioClipsType = new();
 
@@ -55,7 +205,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private List<AudioClip> entityAudioClips = new();
     [SerializeField] private List<AudioClip> noEntityAudioClips = new();
 
-    private List<AudioClip> currentAudioClips = new();
+    private readonly List<AudioClip> currentAudioClips = new();
 
     [Tooltip("Index 0 = Up, 1 = Down, 2 = Left, 3 = Right")]
     [SerializeField] private List<AudioClip> audioClipsDirection = new();
@@ -66,18 +216,62 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip tutorialClip;
     private bool gameStarted = false;
     private bool gamePaused = false;
+    private bool eventRunning = false;
+
+    [SerializeField] private bool unlockedRadar = false;
+
+    private List<SoundObject> soundObjects = new();
+    private Tile currentTile;
+
+    private Player player;
+
+    [SerializeField] private List<AudioEvent> audioEvents = new();
+
+    private void CheckForAudioEvents(Entity currentEntity)
+    {
+        if (!currentEntity.isPlayer) { return; }
+
+        foreach (AudioEvent audioEvent in audioEvents)
+        {
+            audioEvent.CheckForActivation(currentEntity.TurnIndex, this, gameObject);
+        }
+    }
+
+    public void SetPlayer(Player _player)
+    {
+        player = _player;
+    }
+
+    private void StartEvent()
+    {
+        EventManager.InvokeEvent(EventType.Pause);
+        eventRunning = true;
+        StopAllCoroutines();
+    }
+
+    private void EndEvent()
+    {
+        eventRunning = false;
+        StartCoroutine(StartAudioSequence(soundObjects, currentTile, true));
+    }
 
     private void OnEnable()
     {
         EventManager.AddListener(EventType.UnPause, () => gamePaused = false);
         EventManager.AddListener(EventType.Pause, () => gamePaused = true);
         EventManager.AddListener(EventType.StartGame, () => gameStarted = true);
+        EventManager.AddListener(EventType.EventStart, StartEvent);
+        EventManager.AddListener(EventType.EventStop, EndEvent);
+        EventManager.AddListener(EventType.UnlockRadar, () => unlockedRadar = true);
     }
 
-    public void OnMovement(List<SoundObject> soundObjects, Tile tile)
+    public void OnMovement(List<SoundObject> soundObjects, Tile tile, bool player)
     {
-        if (!gameStarted || gamePaused) { return; }
+        if (!gameStarted || gamePaused || !player) { return; }
+
         EventManager.InvokeEvent(EventType.Pause);
+        this.soundObjects = soundObjects;
+        currentTile = tile;
         StartCoroutine(StartAudioSequence(soundObjects, tile));
     }
 
@@ -88,12 +282,15 @@ public class AudioManager : MonoBehaviour
 
     private IEnumerator StartGame()
     {
-        AudioClipPlayer.clip = tutorialClip;
-        AudioClipPlayer.Play();
-
-        while (AudioClipPlayer.isPlaying)
+        if (!skipTutorial)
         {
-            yield return null;
+            AudioClipPlayer.clip = tutorialClip;
+            AudioClipPlayer.Play();
+
+            while (AudioClipPlayer.isPlaying)
+            {
+                yield return null;
+            }
         }
 
         OST.loop = true;
@@ -101,12 +298,21 @@ public class AudioManager : MonoBehaviour
         EventManager.InvokeEvent(EventType.StartGame);
     }
 
-    private IEnumerator StartAudioSequence(List<SoundObject> _soundObjects, Tile tile)
+    private IEnumerator StartAudioSequence(List<SoundObject> _soundObjects, Tile tile, bool skipEnter = false)
     {
-        AudioClipPlayer.clip = copyThat[UnityEngine.Random.Range(0, copyThat.Count)];
-        AudioClipPlayer.Play();
+        if (!skipEnter)
+        {
+            AudioClipPlayer.clip = copyThat[UnityEngine.Random.Range(0, copyThat.Count)];
+            AudioClipPlayer.Play();
 
-        while (AudioClipPlayer.isPlaying) { yield return new WaitForSeconds(amountOfDelayBetweenVoicelines); }
+            while (AudioClipPlayer.isPlaying) { yield return new WaitForSeconds(amountOfDelayBetweenVoicelines); }
+
+            CheckForAudioEvents(player);
+            while (eventRunning)
+            {
+                yield return null;
+            }
+        }
 
         AudioClipPlayer.clip = audioClipsTypeEnter[(int)tile.Type];
         AudioClipPlayer.Play();
@@ -131,7 +337,7 @@ public class AudioManager : MonoBehaviour
 
             while (AudioClipPlayer.isPlaying)
             {
-                yield return new WaitForSeconds(amountOfDelayBetweenVoicelines);
+                yield return default;
             }
         }
 
@@ -156,7 +362,7 @@ public class AudioManager : MonoBehaviour
             if (soundObject.AudioClipType == null) { continue; }
             currentAudioClips.Add(soundObject.AudioClipType);
 
-            if (noEntityAudioClips.Count < 1 || entityAudioClips.Count < 1) { continue; }
+            if (noEntityAudioClips.Count < 1 || entityAudioClips.Count < 1 || !unlockedRadar) { continue; }
             currentAudioClips.Add(soundObject.HasOtherEntity ? entityAudioClips[UnityEngine.Random.Range(0, entityAudioClips.Count)] : noEntityAudioClips[UnityEngine.Random.Range(0, entityAudioClips.Count)]);
         }
     }

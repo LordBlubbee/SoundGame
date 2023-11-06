@@ -249,6 +249,8 @@ MonoBehaviour:
   CurrentTurn: 1
   Player: 1
   Position: {x: 0, y: 0}
+  TurnIndex: 0
+  isPlayer: 0
 --- !u!4 &74025386
 Transform:
   m_ObjectHideFlags: 0
@@ -264,6 +266,63 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &140941357
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2099995919806192386, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
+      propertyPath: m_Name
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905213208496743752, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905213208496743752, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 37.973034
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905213208496743752, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 20.605951
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905213208496743752, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -27.143364
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905213208496743752, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905213208496743752, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905213208496743752, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905213208496743752, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905213208496743752, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905213208496743752, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2905213208496743752, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
 --- !u!1 &1331531349
 GameObject:
   m_ObjectHideFlags: 0
@@ -278,6 +337,8 @@ GameObject:
   - component: {fileID: 1331531354}
   - component: {fileID: 1331531353}
   - component: {fileID: 1331531355}
+  - component: {fileID: 1331531357}
+  - component: {fileID: 1331531356}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -302,7 +363,7 @@ MonoBehaviour:
     GamePaused: 0
   AudioManager: {fileID: 1331531352}
   indexForRestartingScene: 0
-  MapSize: {x: 10, y: 15}
+  MapSize: {x: 5, y: 10}
   entities: []
 --- !u!4 &1331531351
 Transform:
@@ -333,6 +394,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AudioClipPlayer: {fileID: 1331531353}
   OST: {fileID: 1331531354}
+  skipTutorial: 1
   audioClipsType:
   - {fileID: 8300000, guid: 3d0a24ec82cd9ab41a91c435fe91b29e, type: 3}
   - {fileID: 8300000, guid: ae852305ba8eba349a5ea235ca247aab, type: 3}
@@ -364,6 +426,56 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 6b0f9c0abd3b5424884517c121bff57c, type: 3}
   - {fileID: 8300000, guid: 7661596a947e3724980bdc07a80f36dd, type: 3}
   tutorialClip: {fileID: 8300000, guid: 2865be8fd75b30441bff7586a461f0c7, type: 3}
+  unlockedRadar: 0
+  audioEvents:
+  - allAudioClips:
+    - audioClip: {fileID: 8300000, guid: a7c96e156b291fc44a96bce34425d4a3, type: 3}
+      IsVoiceLine: 1
+      PlayedSequently: 0
+    - audioClip: {fileID: 8300000, guid: 2e6508c43d576b04cb9bdc6718fd5a70, type: 3}
+      IsVoiceLine: 1
+      PlayedSequently: 0
+    - audioClip: {fileID: 8300000, guid: e9215a996109e5d4ba83dc2790bfe89c, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 0
+    - audioClip: {fileID: 8300000, guid: c977bfaf05d4eb94792c33af341576c8, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 0
+    - audioClip: {fileID: 8300000, guid: b5ba02ac2a1c4ab41b79909df8594e64, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 1
+    - audioClip: {fileID: 8300000, guid: 6495c731f8f51fa4b907fb84726fb716, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 1
+    HasOccured: 0
+    AmountOfTurnsRequiredToTrigger: 1
+    OnEventCompleted:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1331531357}
+          m_TargetAssemblyTypeName: UnlockRadar, Assembly-CSharp
+          m_MethodName: UnlockRadarFunction
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 1331531356}
+          m_TargetAssemblyTypeName: SpawnEnemy, Assembly-CSharp
+          m_MethodName: SpawnEnemies
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!82 &1331531353
 AudioSource:
   m_ObjectHideFlags: 0
@@ -605,6 +717,30 @@ MonoBehaviour:
     m_Flags: 0
   performDifferentActionWhenPressedBefore: 0
   affectedByPauze: 0
+--- !u!114 &1331531356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1331531349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42db13868e8625341b126234852bdfe9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1331531357
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1331531349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acc5429ed991b8a4fbb4efab6da6e91b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1380989327
 GameObject:
   m_ObjectHideFlags: 0

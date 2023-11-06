@@ -7,13 +7,16 @@ public class GridManager
 {
     [SerializeField] private Tile[,] tiles;
 
+    //For Convenience when picking a random Tile.
+    private List<Vector2Int> tilePositions = new();
+
     private int mapWidth;
     private int mapHeight;
 
     public bool GameStarted = false;
     public bool GamePaused = false;
 
-    public event Action<List<SoundObject>, Tile> OnMoveEntity;
+    public event Action<List<SoundObject>, Tile, bool> OnMoveEntity;
 
     public void OnGameEnd()
     {
@@ -30,7 +33,14 @@ public class GridManager
         GenerateGrid();
     }
 
-    public void MoveEntityInGrid(Entity entityToMove, Vector2Int Movement, bool player = false)
+    public Tile GetRandomTile()
+    {
+        Vector2Int position = tilePositions[UnityEngine.Random.Range(0, tilePositions.Count)];
+        Tile randomTile = tiles[position.x, position.y];
+        return randomTile;
+    }
+
+    public void MoveEntityInGrid(Entity entityToMove, Vector2Int Movement)
     {
         if (!GameStarted || GamePaused) { return; }
 
@@ -48,7 +58,7 @@ public class GridManager
 
         entityToMove.Position = nextTile.Position;
 
-        OnMoveEntity?.Invoke(ReturnNeighbourSoundObjects(entityToMove.Position), nextTile);
+        OnMoveEntity?.Invoke(ReturnNeighbourSoundObjects(entityToMove.Position), nextTile, entityToMove.isPlayer);
 
         if (nextTile.EntitiesInTile.Count > 0) { currentTile.HasEntity = true; }
     }
@@ -113,6 +123,42 @@ public class GridManager
         return soundObjects;
     }
 
+    public List<Tile> ReturnNeighbours(Vector2Int position)
+    {
+        List<Tile> neighbourTiles = new();
+
+        if (position.x - 1 >= 0)
+        {
+            if (tiles[position.x - 1, position.y] != null)
+            {
+                neighbourTiles.Add(tiles[position.x - 1, position.y]);
+            }
+        }
+        if (position.x + 1 < mapWidth - 1)
+        {
+            if (tiles[position.x + 1, position.y] != null)
+            {
+                neighbourTiles.Add(tiles[position.x + 1, position.y]);
+            }
+        }
+        if (position.y - 1 >= 0)
+        {
+            if (tiles[position.x, position.y - 1] != null)
+            {
+                neighbourTiles.Add(tiles[position.x, position.y - 1]);
+            }
+        }
+        if (position.y + 1 < mapHeight - 1)
+        {
+            if (tiles[position.x, position.y + 1] != null)
+            {
+                neighbourTiles.Add(tiles[position.x, position.y + 1]);
+            }
+        }
+
+        return neighbourTiles;
+    }
+
     private void GenerateGrid()
     {
         tiles = new Tile[mapWidth, mapHeight];
@@ -126,6 +172,7 @@ public class GridManager
                     Type = x == 0 && y == 0 ? TileType.Plains : GetRandomTileType()
                 };
                 tiles[x, y] = tile;
+                tilePositions.Add(new Vector2Int(x, y));
             }
         }
     }

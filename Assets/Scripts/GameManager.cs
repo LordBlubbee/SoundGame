@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioManager))]
@@ -32,10 +30,11 @@ public class GameManager : MonoBehaviour
         //Just to make sure the player is at the start, for convenience.
         Player player = FindObjectOfType<Player>();
         entities.Add(player);
+        AudioManager.SetPlayer(player);
         EventManager.AddListener(EventType.StartGame, () => player.StartGame());
 
-        Entity[] entitiesArray = FindObjectsOfType<Entity>();
-        foreach (Entity entity in entitiesArray)
+        Enemy[] entitiesArray = FindObjectsOfType<Enemy>();
+        foreach (Enemy entity in entitiesArray)
         {
             if (entities.Contains(entity)) { continue; }
             entities.Add(entity);

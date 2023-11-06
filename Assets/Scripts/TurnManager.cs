@@ -23,21 +23,20 @@ public class TurnManager
 
     public void ChangeTurn()
     {
-        if (entities.Count <= 1) { return; }
+        Entity currentEntity = entities[TurnIndex];
 
-        Debug.Log(entities[TurnIndex].CurrentTurn);
-        entities[TurnIndex].CurrentTurn = false;
+        currentEntity.CurrentTurn = false;
+        currentEntity.TurnIndex++;
 
         TurnIndex++;
         ResetIsTurn();
 
-        Debug.Log(entities[TurnIndex].CurrentTurn);
         entities[TurnIndex].CurrentTurn = true;
     }
 
     private void ResetIsTurn()
     {
-        if (TurnIndex > entities.Count)
+        if (TurnIndex >= entities.Count)
         {
             TurnIndex = 0;
         }

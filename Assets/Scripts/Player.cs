@@ -4,9 +4,18 @@ public class Player : Entity
 {
     private GameManager gameManager;
 
+    private bool gamePaused = false;
+
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
+        isPlayer = true;
+    }
+
+    private void OnEnable()
+    {
+        EventManager.AddListener(EventType.Pause, () => gamePaused = true);
+        EventManager.AddListener(EventType.UnPause, () => gamePaused = false);
     }
 
     public void StartGame()
@@ -21,7 +30,7 @@ public class Player : Entity
 
     private void InputHandling()
     {
-        if (!CurrentTurn) { return; }
+        if (!CurrentTurn || gamePaused) { return; }
 
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {

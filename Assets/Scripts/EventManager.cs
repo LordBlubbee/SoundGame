@@ -6,6 +6,9 @@ public enum EventType
     Pause = 0,
     UnPause = 1,
     StartGame = 3,
+    EventStart = 4,
+    EventStop = 5,
+    UnlockRadar = 6,
 }
 
 public static class EventManager
