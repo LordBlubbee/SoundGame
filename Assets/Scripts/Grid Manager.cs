@@ -58,7 +58,7 @@ public class GridManager
 
         entityToMove.Position = nextTile.Position;
 
-        OnMoveEntity?.Invoke(ReturnNeighbourSoundObjects(entityToMove.Position), nextTile, entityToMove.isPlayer);
+        OnMoveEntity?.Invoke(ReturnNeighbourSoundObjects(entityToMove.Position), nextTile, entityToMove.IsPlayer);
 
         if (nextTile.EntitiesInTile.Count > 0) { currentTile.HasEntity = true; }
     }

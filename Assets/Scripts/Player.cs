@@ -9,7 +9,7 @@ public class Player : Entity
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
-        isPlayer = true;
+        IsPlayer = true;
     }
 
     private void OnEnable()
@@ -20,6 +20,7 @@ public class Player : Entity
 
     public void StartGame()
     {
+        IsActive = true;
         gameManager.GridManager.MoveEntityInGrid(this, new Vector2Int(0, 0));
     }
 
