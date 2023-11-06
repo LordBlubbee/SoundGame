@@ -31,6 +31,12 @@ public class TurnManager
         TurnIndex++;
         ResetIsTurn();
 
+        while (!entities[TurnIndex].IsActive)
+        {
+            TurnIndex++;
+            ResetIsTurn();
+        }
+
         entities[TurnIndex].CurrentTurn = true;
     }
 

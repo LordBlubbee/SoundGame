@@ -247,10 +247,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentTurn: 1
-  Player: 1
   Position: {x: 0, y: 0}
   TurnIndex: 0
-  isPlayer: 0
+  IsPlayer: 0
+  IsActive: 0
 --- !u!4 &74025386
 Transform:
   m_ObjectHideFlags: 0
@@ -405,7 +405,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: d55680c453b73034a98c4b1166f6e847, type: 3}
   - {fileID: 8300000, guid: 56ae877efc542244ca1ab1ef52c4e9bd, type: 3}
   - {fileID: 8300000, guid: 771377efe42159a45922ea8363f92105, type: 3}
-  amountOfDelayBetweenVoicelines: 1.5
+  amountOfDelayBetweenVoicelines: 1
   entityAudioClips:
   - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
   noEntityAudioClips:
@@ -447,8 +447,7 @@ MonoBehaviour:
     - audioClip: {fileID: 8300000, guid: 6495c731f8f51fa4b907fb84726fb716, type: 3}
       IsVoiceLine: 0
       PlayedSequently: 1
-    HasOccured: 0
-    AmountOfTurnsRequiredToTrigger: 1
+    AmountOfTurnsRequiredToTrigger: 7
     OnEventCompleted:
       m_PersistentCalls:
         m_Calls:

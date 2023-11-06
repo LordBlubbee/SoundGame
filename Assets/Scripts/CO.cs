@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class CO : MonoBehaviour
 {
-    //One script that handles everything isn't ideal. You might want to be more specific with the naming.
-
     public AUD spawnSFX;
 
     protected bool playerTurn = false; //Can player input to move in a certain direction?
@@ -64,25 +62,16 @@ public class CO : MonoBehaviour
                 //Play Sound Here
                 return true;
             }
-        }
-        for (int i = 0; i < detect; i++) //SOUTH
-        {
             if (coord == playerPosition + new Vector2(0, -i - 1))
             {
                 //Play Sound Here
                 return true;
             }
-        }
-        for (int i = 0; i < detect; i++) //EAST
-        {
             if (coord == playerPosition + new Vector2(i + 1, 0))
             {
                 //Play Sound Here
                 return true;
             }
-        }
-        for (int i = 0; i < detect; i++) //WEST
-        {
             if (coord == playerPosition + new Vector2(-i - 1, 0))
             {
                 //Play Sound Here

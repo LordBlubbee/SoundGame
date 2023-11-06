@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
 
         GridManager = new(MapSize.x, MapSize.y, this);
         GridManager.OnMoveEntity += AudioManager.OnMovement;
+
         EventManager.AddListener(EventType.StartGame, () => GridManager.GameStarted = true);
         EventManager.AddListener(EventType.Pause, () => GridManager.GamePaused = true);
         EventManager.AddListener(EventType.UnPause, () => GridManager.GamePaused = false);
