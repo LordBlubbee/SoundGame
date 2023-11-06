@@ -9,13 +9,17 @@ using UnityEngine.Events;
 public class AudioClipType
 {
     public AudioClip audioClip;
+
     public bool IsVoiceLine;
+
+    [Tooltip("Makes the audio Clip played in sequence. Voicelines are always played in sequence.")]
     public bool PlayedSequently;
 }
 
 [Serializable]
 public class AudioEvent
 {
+    [Tooltip("It's order sensitive.")]
     public List<AudioClipType> allAudioClips = new();
 
     [NonSerialized] public bool HasOccured = false;
@@ -38,7 +42,6 @@ public class AudioEvent
         if (currentEntityIndex >= AmountOfTurnsRequiredToTrigger)
         {
             this.audioSourceHolder = audioSourceHolder;
-            Debug.Log("Event Start.");
             EventManager.InvokeEvent(EventType.EventStart);
 
             voiceLines.Clear();
