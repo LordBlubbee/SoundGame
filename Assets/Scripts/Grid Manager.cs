@@ -138,6 +138,14 @@ public class GridManager
     {
         if (!player) { return; }
 
+        foreach (Tile predefinedTile in predefinedTiles)
+        {
+            if (predefinedTile == tiles[position.x, position.y])
+            {
+                return;
+            }
+        }
+
         tiles[position.x, position.y].Visited = true;
     }
 
