@@ -23,7 +23,7 @@ public class AudioEvent
     public List<AudioClipType> allAudioClips = new();
 
     [NonSerialized] public bool HasOccured = false;
-    public int AmountOfTurnsRequiredToTrigger;
+    public TileType TileTypeToTriggerEvent;
 
     private List<AudioSource> audioSources = new();
     private GameObject audioSourceHolder;
@@ -35,11 +35,11 @@ public class AudioEvent
     private List<AudioClip> voiceLines = new();
     private List<AudioClipType> soundEffects = new();
 
-    public void CheckForActivation(int currentEntityIndex, MonoBehaviour owner, GameObject audioSourceHolder)
+    public void CheckForActivation(MonoBehaviour owner, GameObject audioSourceHolder, Tile currentTile)
     {
         if (HasOccured) { return; }
 
-        if (currentEntityIndex >= AmountOfTurnsRequiredToTrigger)
+        if (currentTile.Type == TileTypeToTriggerEvent)
         {
             this.audioSourceHolder = audioSourceHolder;
             EventManager.InvokeEvent(EventType.EventStart);

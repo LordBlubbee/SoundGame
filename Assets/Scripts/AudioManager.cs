@@ -52,13 +52,13 @@ public class AudioManager : MonoBehaviour
 
     [SerializeField] private List<AudioEvent> audioEvents = new();
 
-    private void CheckForAudioEvents(Entity currentEntity)
+    private void CheckForAudioEvents(Entity currentEntity, Tile currentTile)
     {
         if (!currentEntity.IsPlayer) { return; }
 
         foreach (AudioEvent audioEvent in audioEvents)
         {
-            audioEvent.CheckForActivation(currentEntity.TurnIndex, this, gameObject);
+            audioEvent.CheckForActivation(this, gameObject, currentTile);
         }
     }
 
@@ -132,7 +132,7 @@ public class AudioManager : MonoBehaviour
 
             while (AudioClipPlayer.isPlaying) { yield return new WaitForSeconds(amountOfDelayBetweenVoicelines); }
 
-            CheckForAudioEvents(player);
+            CheckForAudioEvents(player, tile);
             while (eventRunning)
             {
                 yield return null;

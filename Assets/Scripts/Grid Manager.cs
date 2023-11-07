@@ -190,7 +190,6 @@ public class GridManager
                     Type = x == 0 && y == 0 ? TileType.Plains : GetRandomTileType()
                 };
 
-                Debug.Log(tile.Type);
                 tiles[x, y] = tile;
                 tilePositions.Add(new Vector2Int(x, y));
             }

@@ -365,10 +365,8 @@ MonoBehaviour:
   indexForRestartingScene: 0
   MapSize: {x: 5, y: 10}
   predefinedTiles:
-  - HasEntity: 0
-    Type: 0
-    EntitiesInTile: []
-    Position: {x: 0, y: 0}
+  - Type: 3
+    Position: {x: 1, y: 0}
   randomTileTypes: 000000000100000002000000
   entities: []
 --- !u!4 &1331531351
@@ -453,7 +451,7 @@ MonoBehaviour:
     - audioClip: {fileID: 8300000, guid: 6495c731f8f51fa4b907fb84726fb716, type: 3}
       IsVoiceLine: 0
       PlayedSequently: 1
-    AmountOfTurnsRequiredToTrigger: 7
+    TileTypeToTriggerEvent: 3
     OnEventCompleted:
       m_PersistentCalls:
         m_Calls:
@@ -489,7 +487,7 @@ MonoBehaviour:
     - audioClip: {fileID: 8300000, guid: 6495c731f8f51fa4b907fb84726fb716, type: 3}
       IsVoiceLine: 0
       PlayedSequently: 1
-    AmountOfTurnsRequiredToTrigger: 13
+    TileTypeToTriggerEvent: 0
     OnEventCompleted:
       m_PersistentCalls:
         m_Calls:
