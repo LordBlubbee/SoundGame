@@ -163,22 +163,42 @@ public class GridManager
     {
         tiles = new Tile[mapWidth, mapHeight];
 
+        bool hasHouseTile = false;
+
         for (int x = 0; x < mapWidth; x++)
         {
             for (int y = 0; y < mapHeight; y++)
             {
                 Tile tile = new(x, y)
                 {
-                    Type = x == 0 && y == 0 ? TileType.Plains : GetRandomTileType()
+                    Type = x == 0 && y == 0 ? TileType.Plains : GetRandomTileType(ref hasHouseTile)
                 };
+
+                Debug.Log(tile.Type);
                 tiles[x, y] = tile;
                 tilePositions.Add(new Vector2Int(x, y));
             }
         }
     }
 
-    private TileType GetRandomTileType()
+    private TileType GetRandomTileType(ref bool hasHouseTile)
     {
-        return (TileType)UnityEngine.Random.Range(0, Enum.GetValues(typeof(TileType)).Length);
+        TileType randomTileType;
+
+        if (hasHouseTile)
+        {
+            randomTileType = (TileType)UnityEngine.Random.Range(0, Enum.GetValues(typeof(TileType)).Length - 1);
+        }
+        else
+        {
+            randomTileType = (TileType)UnityEngine.Random.Range(0, Enum.GetValues(typeof(TileType)).Length);
+        }
+
+        if (randomTileType == TileType.House)
+        {
+            hasHouseTile = true;
+        }
+
+        return randomTileType;
     }
 }
