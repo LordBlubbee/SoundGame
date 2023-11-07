@@ -364,6 +364,12 @@ MonoBehaviour:
   AudioManager: {fileID: 1331531352}
   indexForRestartingScene: 0
   MapSize: {x: 5, y: 10}
+  predefinedTiles:
+  - HasEntity: 0
+    Type: 0
+    EntitiesInTile: []
+    Position: {x: 0, y: 0}
+  randomTileTypes: 000000000100000002000000
   entities: []
 --- !u!4 &1331531351
 Transform:
@@ -463,6 +469,30 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    MaxAmountOfAudioSources: 3
+  - allAudioClips:
+    - audioClip: {fileID: 8300000, guid: a7c96e156b291fc44a96bce34425d4a3, type: 3}
+      IsVoiceLine: 1
+      PlayedSequently: 0
+    - audioClip: {fileID: 8300000, guid: 2e6508c43d576b04cb9bdc6718fd5a70, type: 3}
+      IsVoiceLine: 1
+      PlayedSequently: 0
+    - audioClip: {fileID: 8300000, guid: e9215a996109e5d4ba83dc2790bfe89c, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 0
+    - audioClip: {fileID: 8300000, guid: c977bfaf05d4eb94792c33af341576c8, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 0
+    - audioClip: {fileID: 8300000, guid: b5ba02ac2a1c4ab41b79909df8594e64, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 1
+    - audioClip: {fileID: 8300000, guid: 6495c731f8f51fa4b907fb84726fb716, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 1
+    AmountOfTurnsRequiredToTrigger: 13
+    OnEventCompleted:
+      m_PersistentCalls:
+        m_Calls:
         - m_Target: {fileID: 1331531356}
           m_TargetAssemblyTypeName: SpawnEnemy, Assembly-CSharp
           m_MethodName: SpawnEnemies
@@ -475,6 +505,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+    MaxAmountOfAudioSources: 3
 --- !u!82 &1331531353
 AudioSource:
   m_ObjectHideFlags: 0

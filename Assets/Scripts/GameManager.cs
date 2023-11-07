@@ -15,13 +15,17 @@ public class GameManager : MonoBehaviour
 
     public event Action OnGameOver;
 
+    [SerializeField] private List<Tile> predefinedTiles = new();
+
+    [SerializeField] private List<TileType> randomTileTypes = new();
+
     public List<Entity> entities = new();
 
     void Start()
     {
         AudioManager = GetComponent<AudioManager>();
 
-        GridManager = new(MapSize.x, MapSize.y, this);
+        GridManager = new(MapSize.x, MapSize.y, predefinedTiles, randomTileTypes, this);
         GridManager.OnMoveEntity += AudioManager.OnMovement;
 
         EventManager.AddListener(EventType.StartGame, () => GridManager.GameStarted = true);

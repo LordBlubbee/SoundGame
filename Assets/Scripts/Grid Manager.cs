@@ -10,11 +10,15 @@ public class GridManager
     //For Convenience when picking a random Tile.
     private List<Vector2Int> tilePositions = new();
 
+    private List<Tile> predefinedTiles = new();
+
     private int mapWidth;
     private int mapHeight;
 
     public bool GameStarted = false;
     public bool GamePaused = false;
+
+    private List<TileType> tileTypesForRandomGeneration = new();
 
     public event Action<List<SoundObject>, Tile, bool> OnMoveEntity;
 
@@ -25,10 +29,16 @@ public class GridManager
         OnMoveEntity = null;
     }
 
-    public GridManager(int mapWidth = 3, int mapHeight = 5, GameManager gameManager = null)
+    public GridManager(int mapWidth, int mapHeight, List<Tile> listOfPredefinedTiles, List<TileType> randomTileTypes, GameManager gameManager = null)
     {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
+
+        tileTypesForRandomGeneration.Clear();
+        tileTypesForRandomGeneration.AddRange(randomTileTypes);
+
+        predefinedTiles.Clear();
+        predefinedTiles.AddRange(listOfPredefinedTiles);
 
         GenerateGrid();
     }
@@ -163,15 +173,13 @@ public class GridManager
     {
         tiles = new Tile[mapWidth, mapHeight];
 
-        bool hasHouseTile = false;
-
         for (int x = 0; x < mapWidth; x++)
         {
             for (int y = 0; y < mapHeight; y++)
             {
                 Tile tile = new(x, y)
                 {
-                    Type = x == 0 && y == 0 ? TileType.Plains : GetRandomTileType(ref hasHouseTile)
+                    Type = x == 0 && y == 0 ? TileType.Plains : GetRandomTileType()
                 };
 
                 Debug.Log(tile.Type);
@@ -179,25 +187,18 @@ public class GridManager
                 tilePositions.Add(new Vector2Int(x, y));
             }
         }
+
+        foreach (Tile predefinedTile in predefinedTiles)
+        {
+            tiles[predefinedTile.Position.x, predefinedTile.Position.y] = predefinedTile;
+        }
     }
 
-    private TileType GetRandomTileType(ref bool hasHouseTile)
+    private TileType GetRandomTileType()
     {
         TileType randomTileType;
 
-        if (hasHouseTile)
-        {
-            randomTileType = (TileType)UnityEngine.Random.Range(0, Enum.GetValues(typeof(TileType)).Length - 1);
-        }
-        else
-        {
-            randomTileType = (TileType)UnityEngine.Random.Range(0, Enum.GetValues(typeof(TileType)).Length);
-        }
-
-        if (randomTileType == TileType.House)
-        {
-            hasHouseTile = true;
-        }
+        randomTileType = tileTypesForRandomGeneration[UnityEngine.Random.Range(0, tileTypesForRandomGeneration.Count)];
 
         return randomTileType;
     }
