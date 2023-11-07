@@ -68,6 +68,7 @@ public class GridManager
 
         entityToMove.Position = nextTile.Position;
 
+        SetTileVisited(entityToMove.Position, entityToMove.IsPlayer);
         OnMoveEntity?.Invoke(ReturnNeighbourSoundObjects(entityToMove.Position), nextTile, entityToMove.IsPlayer);
 
         if (nextTile.EntitiesInTile.Count > 0) { currentTile.HasEntity = true; }
@@ -79,7 +80,7 @@ public class GridManager
 
         if (position.x - 1 >= 0)
         {
-            if (tiles[position.x - 1, position.y] != null)
+            if (tiles[position.x - 1, position.y] != null && !tiles[position.x - 1, position.y].Visited)
             {
                 SoundObject soundObject = new()
                 {
@@ -92,7 +93,7 @@ public class GridManager
         }
         if (position.x + 1 < mapWidth - 1)
         {
-            if (tiles[position.x + 1, position.y] != null)
+            if (tiles[position.x + 1, position.y] != null && !tiles[position.x + 1, position.y].Visited)
             {
                 SoundObject soundObject = new()
                 {
@@ -105,7 +106,7 @@ public class GridManager
         }
         if (position.y - 1 >= 0)
         {
-            if (tiles[position.x, position.y - 1] != null)
+            if (tiles[position.x, position.y - 1] != null && !tiles[position.x, position.y - 1].Visited)
             {
                 SoundObject soundObject = new()
                 {
@@ -118,7 +119,7 @@ public class GridManager
         }
         if (position.y + 1 < mapHeight - 1)
         {
-            if (tiles[position.x, position.y + 1] != null)
+            if (tiles[position.x, position.y + 1] != null && !tiles[position.x, position.y + 1].Visited)
             {
                 SoundObject soundObject = new()
                 {
@@ -131,6 +132,13 @@ public class GridManager
         }
 
         return soundObjects;
+    }
+
+    public void SetTileVisited(Vector2Int position, bool player)
+    {
+        if (!player) { return; }
+
+        tiles[position.x, position.y].Visited = true;
     }
 
     public List<Tile> ReturnNeighbours(Vector2Int position)

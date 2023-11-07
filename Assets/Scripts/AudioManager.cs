@@ -127,7 +127,7 @@ public class AudioManager : MonoBehaviour
     {
         if (!skipEnter)
         {
-            AudioClipPlayer.clip = copyThat[UnityEngine.Random.Range(0, copyThat.Count)];
+            AudioClipPlayer.clip = copyThat[Random.Range(0, copyThat.Count)];
             AudioClipPlayer.Play();
 
             while (AudioClipPlayer.isPlaying) { yield return new WaitForSeconds(amountOfDelayBetweenVoicelines); }
