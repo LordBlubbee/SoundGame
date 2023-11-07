@@ -56,6 +56,9 @@ public class AudioManager : MonoBehaviour
 
     [SerializeField] private AudioClip hasVisitedHouseOrTree;
 
+    [Tooltip("Index Sensitive. 0 and 1 are handled by a seperate event. index 0 progress 2 skip 1 progress 2 regular,")]
+    [SerializeField] private List<AudioEvent> SpaceShipEvents = new();
+
     private bool shipEncounter = false;
     private bool gameStarted = false;
     private bool gamePaused = false;
@@ -116,6 +119,11 @@ public class AudioManager : MonoBehaviour
         this.soundObjects = soundObjects;
         currentTile = tile;
         StartCoroutine(StartAudioSequence(soundObjects, tile));
+    }
+
+    private void CheckForProgressAdvancement()
+    {
+
     }
 
     private void Start()

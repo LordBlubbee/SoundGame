@@ -9,10 +9,7 @@ public class Player : Entity
     [SerializeField] private int health = 3;
     public int Health
     {
-        get
-        {
-            return health;
-        }
+        get => health;
         set
         {
             health = value;
@@ -21,9 +18,7 @@ public class Player : Entity
                 EventManager.InvokeEvent(EventType.GameOver);
             }
         }
-
     }
-
 
     private void Start()
     {

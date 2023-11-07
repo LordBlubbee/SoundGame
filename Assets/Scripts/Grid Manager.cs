@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 [Serializable]
 public class GridManager
@@ -114,6 +115,11 @@ public class GridManager
         if (nextTile.HostileEntity)
         {
             EventManager.InvokeEvent(EventType.Attack);
+        }
+
+        if (nextTile.Type == TileType.Artifact && entityToMove.IsPlayer)
+        {
+            entityToMove.HasArtifact = true;
         }
 
         if ((nextTile.Type == TileType.House || nextTile.Type == TileType.Tree) && entityToMove.IsPlayer)

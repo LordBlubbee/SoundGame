@@ -16,4 +16,5 @@ public class Entity : MonoBehaviour
     public bool IsActive = false;
 
     public bool HasVisitedHouseOrTree = false;
+    public bool HasArtifact = false;
 }
