@@ -18,11 +18,14 @@ public class AudioManager : MonoBehaviour
     [Tooltip("Convenient for testing.")]
     [SerializeField] private bool skipTutorial = false;
 
-    [Tooltip("Typing is based on Index; Index 0 is Swamp, 1 River, 2 Plains, 3 House, 4 = Mine, 5 = Tree, 6 = Shack")]
+    [Tooltip("Typing is based on Index; Index 0 is Swamp, 1 River, 2 Plains, 3 House, 4 = Mine, 5 = Tree, 6 = Shack, 7 = AlienShip")]
     [SerializeField] private List<AudioClip> audioClipsType = new();
 
-    [Tooltip("Typing is based on Index; Index 0 is Swamp, 1 River, 2 Plains, 3 House, 4 Mine, 5 Body, 6 Tree, 7 Shack, 8 Artifact")]
+    [Tooltip("Typing is based on Index; Index 0 is Swamp, 1 River, 2 Plains, 3 House, 4 Mine, 5 Body, 6 Tree, 7 Shack, 8 Artifact, 9 Alienship")]
     [SerializeField] private List<AudioClip> audioClipsTypeEnter = new();
+
+    [Tooltip("Typing is based on Index; Index 0 is House, 1 Body, 2 Tree, 3 Shack, 4 Artifact.")]
+    [SerializeField] private List<AudioClip> audioClipsTypeEnterFamiliar = new();
 
     [Tooltip("The amount of time waited untill the next voiceline will be played, in seconds.")]
     [SerializeField] private float amountOfDelayBetweenVoicelines = 1.0f;
@@ -43,15 +46,24 @@ public class AudioManager : MonoBehaviour
     [Tooltip("Called once the movement sequence has finished.")]
     [SerializeField] private List<AudioClip> completedAudioClips = new();
 
+    [Tooltip("Index 0 = hide at house, 1 hide at shack.")]
+    [SerializeField] private AudioClip[] hideAudioClips = new AudioClip[2];
+
     [SerializeField] private AudioClip tutorialClip;
+
+    [Tooltip("Index Sensitive, 0 is attack 1, 1 attack 2, 2 attack 3.The on completed gets filled automatically and can be ignored, unless further function is desired. Tile to Trigger can also be ignored. Trigger for it can be found in the code, under Attack()")]
+    [SerializeField] private List<AudioEvent> AttackEvents;
 
     [SerializeField] private AudioClip hasVisitedHouseOrTree;
 
+    private bool shipEncounter = false;
     private bool gameStarted = false;
     private bool gamePaused = false;
     private bool eventRunning = false;
 
     private bool unlockedRadar = false;
+
+    private GameManager gameManager;
 
     private List<SoundObject> soundObjects = new();
     private Tile currentTile;
@@ -68,11 +80,6 @@ public class AudioManager : MonoBehaviour
         {
             audioEvent.CheckForActivation(this, gameObject, currentTile);
         }
-    }
-
-    public void SetPlayer(Player _player)
-    {
-        player = _player;
     }
 
     private void StartEvent()
@@ -96,7 +103,9 @@ public class AudioManager : MonoBehaviour
         EventManager.AddListener(EventType.EventStart, StartEvent);
         EventManager.AddListener(EventType.EventStop, EndEvent);
         EventManager.AddListener(EventType.UnlockRadar, () => unlockedRadar = true);
-        EventManager.AddListener(EventType.SwapMap, () => StopAllCoroutines());
+        EventManager.AddListener(EventType.SwapMap, StopAllCoroutines);
+        EventManager.AddListener(EventType.Attack, CheckAttack);
+        EventManager.AddListener(EventType.ShipEncounter, () => shipEncounter = true);
     }
 
     public void OnMovement(List<SoundObject> soundObjects, Tile tile, bool player)
@@ -111,7 +120,62 @@ public class AudioManager : MonoBehaviour
 
     private void Start()
     {
+        player = FindObjectOfType<Player>();
+
+        gameManager = FindObjectOfType<GameManager>();
+
+        foreach (AudioEvent audioEvent in AttackEvents)
+        {
+            audioEvent.OnEventCompleted.AddListener(Attack);
+        }
+
         StartCoroutine(StartGame());
+    }
+
+    private void CheckAttack()
+    {
+        switch (player.Health)
+        {
+            case 3:
+                {
+                    AttackEvents[0].TriggerAudioEvent(this, gameObject);
+                    break;
+                }
+            case 2:
+                {
+                    AttackEvents[1].TriggerAudioEvent(this, gameObject);
+                    break;
+                }
+            case 1:
+                {
+                    AttackEvents[2].TriggerAudioEvent(this, gameObject);
+                    break;
+                }
+        }
+    }
+
+    private void Attack(MapType mapType)
+    {
+        if (player.Health == 3)
+        {
+            if (player.Position.x < gameManager.MapSize.x)
+            {
+                player.Position += new Vector2Int(1, 0);
+            }
+            player.Health -= 1;
+        }
+        else if (player.Health == 2)
+        {
+            if (player.Position.y > 0)
+            {
+                player.Position += new Vector2Int(0, -1);
+            }
+            player.Health -= 1;
+        }
+        else if (player.Health == 1)
+        {
+            player.Health -= 1;
+        }
     }
 
     private IEnumerator StartGame()
@@ -148,7 +212,47 @@ public class AudioManager : MonoBehaviour
             }
         }
 
-        AudioClipPlayer.clip = audioClipsTypeEnter[(int)tile.Type];
+        if ((tile.Type == TileType.House || tile.Type == TileType.Tree) && player.HasVisitedHouseOrTree)
+        {
+            AudioClipPlayer.clip = hasVisitedHouseOrTree;
+        }
+        else
+        {
+            switch (tile.Type)
+            {
+                case TileType.House:
+                    {
+                        AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[0];
+                        break;
+                    }
+                case TileType.Body:
+                    {
+                        AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[1];
+                        break;
+                    }
+                case TileType.Tree:
+                    {
+                        AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[2];
+                        break;
+                    }
+                case TileType.Shack:
+                    {
+                        AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[3];
+                        break;
+                    }
+                case TileType.Artifact:
+                    {
+                        AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[4];
+                        break;
+                    }
+                default:
+                    {
+                        AudioClipPlayer.clip = audioClipsTypeEnter[(int)tile.Type];
+                        break;
+                    }
+            }
+        }
+
         AudioClipPlayer.Play();
 
         while (AudioClipPlayer.isPlaying) { yield return new WaitForSeconds(amountOfDelayBetweenVoicelines); }
@@ -157,6 +261,7 @@ public class AudioManager : MonoBehaviour
         {
             soundObject.AudioClipsDirection = audioClipsDirection;
             soundObject.AudioClipsType = audioClipsType;
+            soundObject.AudioClipsTypeFamiliar = audioClipsTypeEnterFamiliar;
         }
 
         GetAudioClips(_soundObjects);
@@ -196,13 +301,17 @@ public class AudioManager : MonoBehaviour
 
             if (soundObject.AudioClipType == null) { continue; }
 
-            if ((soundObject.Type == TileType.House || soundObject.Type == TileType.Tree) && player.HasVisitedHouseOrTree)
+            currentAudioClips.Add(soundObject.AudioClipType);
+
+            if (soundObject.Type == TileType.House && soundObject.HostileEntity)
             {
-                currentAudioClips.Add(hasVisitedHouseOrTree);
+                currentAudioClips.Add(hideAudioClips[0]);
+                continue;
             }
-            else
+            if (soundObject.Type == TileType.Shack && soundObject.HostileEntity)
             {
-                currentAudioClips.Add(soundObject.AudioClipType);
+                currentAudioClips.Add(hideAudioClips[1]);
+                continue;
             }
 
             if (!unlockedRadar) { continue; }

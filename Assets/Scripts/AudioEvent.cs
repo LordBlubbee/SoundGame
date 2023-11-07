@@ -46,28 +46,32 @@ public class AudioEvent
 
         if (currentTile.Type == TileTypeToTriggerEvent)
         {
-            this.audioSourceHolder = audioSourceHolder;
-            EventManager.InvokeEvent(EventType.EventStart);
-
-            voiceLines.Clear();
-            soundEffects.Clear();
-
-            foreach (AudioClipType audioClipType in allAudioClips)
-            {
-                if (audioClipType.IsVoiceLine)
-                {
-                    voiceLines.Add(audioClipType.audioClip);
-                }
-                else
-                {
-                    soundEffects.Add(audioClipType);
-                }
-            }
-
-            owner.StartCoroutine(SoundEffectsSequence());
-            owner.StartCoroutine(VoiceLinesSequence());
-            HasOccured = true;
+            TriggerAudioEvent(owner, audioSourceHolder);
         }
+    }
+
+    public void TriggerAudioEvent(MonoBehaviour owner, GameObject audioSourceHolder)
+    {
+        this.audioSourceHolder = audioSourceHolder;
+        EventManager.InvokeEvent(EventType.EventStart);
+
+        voiceLines.Clear();
+        soundEffects.Clear();
+
+        foreach (AudioClipType audioClipType in allAudioClips)
+        {
+            if (audioClipType.IsVoiceLine)
+            {
+                voiceLines.Add(audioClipType.audioClip);
+            }
+            else
+            {
+                soundEffects.Add(audioClipType);
+            }
+        }
+        owner.StartCoroutine(SoundEffectsSequence());
+        owner.StartCoroutine(VoiceLinesSequence());
+        HasOccured = true;
     }
 
     private AudioSource CheckForUnusedAudioSource(bool sequence)

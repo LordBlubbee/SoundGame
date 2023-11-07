@@ -108,9 +108,13 @@ public class GridManager
 
         if (currentTile.EntitiesInTile.Count < 1) { currentTile.HostileEntity = false; }
 
-
         Tile nextTile = tiles[futurePosition.x, futurePosition.y];
         nextTile.EntitiesInTile.Add(entityToMove);
+
+        if (nextTile.HostileEntity)
+        {
+            EventManager.InvokeEvent(EventType.Attack);
+        }
 
         if ((nextTile.Type == TileType.House || nextTile.Type == TileType.Tree) && entityToMove.IsPlayer)
         {
@@ -203,14 +207,6 @@ public class GridManager
     public void SetTileVisited(Vector2Int position, bool player)
     {
         if (!player) { return; }
-
-        foreach (Tile predefinedTile in predefinedTiles)
-        {
-            if (predefinedTile == tiles[position.x, position.y])
-            {
-                return;
-            }
-        }
 
         tiles[position.x, position.y].Visited = true;
     }

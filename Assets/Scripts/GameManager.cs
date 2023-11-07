@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     [Tooltip("The scene index, used for restarting.")]
     [SerializeField] private int indexForRestartingScene = 0;
 
-    [SerializeField] private Vector2Int MapSize = new();
+    public Vector2Int MapSize = new();
 
     [SerializeField] private List<Tile> predefinedTilesForest = new();
     [SerializeField] private List<Tile> predefinedTilesMine = new();
@@ -43,7 +43,6 @@ public class GameManager : MonoBehaviour
         //Just to make sure the player is at the start, for convenience.
         Player player = FindObjectOfType<Player>();
         entities.Add(player);
-        AudioManager.SetPlayer(player);
         EventManager.AddListener(EventType.StartGame, () => player.StartGame());
 
         Enemy[] entitiesArray = FindObjectsOfType<Enemy>();
@@ -55,6 +54,11 @@ public class GameManager : MonoBehaviour
 
         TurnManager = new();
         TurnManager.AddEntitiesToList(ref entities);
+    }
+
+    public void EnableShipEncounter()
+    {
+        EventManager.InvokeEvent(EventType.ShipEncounter);
     }
 
     //Called through the input script

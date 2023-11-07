@@ -12,6 +12,7 @@ public enum TileType
     Tree = 6,
     Shack = 7,
     Artifact = 8,
+    AlienShip = 9,
 }
 
 [System.Serializable]

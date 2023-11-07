@@ -378,7 +378,7 @@ MonoBehaviour:
     Position: {x: 0, y: 1}
   - HostileEntity: 0
     Visited: 0
-    HasEntity: 0
+    HasEntity: 1
     Type: 6
     EntitiesInTile: []
     Position: {x: 2, y: 0}
@@ -395,6 +395,12 @@ MonoBehaviour:
     Type: 8
     EntitiesInTile: []
     Position: {x: 4, y: 0}
+  - HostileEntity: 0
+    Visited: 0
+    HasEntity: 1
+    Type: 9
+    EntitiesInTile: []
+    Position: {x: 0, y: 3}
   randomTileTypesForest: 000000000100000002000000
   randomTileTypesMine: 000000000100000002000000
 --- !u!4 &1331531351
@@ -435,6 +441,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 0bb8dafae9cb67a46a4caddff2654d10, type: 3}
   - {fileID: 8300000, guid: 2df93f2437e1e4e42b5069259c9bd9ee, type: 3}
   - {fileID: 8300000, guid: e7e3c766fdb56824da88aaba0f86a82a, type: 3}
+  - {fileID: 8300000, guid: 0e659c49962e8114b8f0db8ad584add5, type: 3}
   audioClipsTypeEnter:
   - {fileID: 8300000, guid: 6884b65ccc9b77f4f8b0f11d494572dd, type: 3}
   - {fileID: 8300000, guid: d55680c453b73034a98c4b1166f6e847, type: 3}
@@ -445,6 +452,13 @@ MonoBehaviour:
   - {fileID: 8300000, guid: a559cc2b43eb94a46857f0c17af84cee, type: 3}
   - {fileID: 8300000, guid: 03acfdadcea0b424fb00775799dbc216, type: 3}
   - {fileID: 8300000, guid: 9cc243c378410ca4e95a72a8c30c098d, type: 3}
+  - {fileID: 8300000, guid: 1df7fc1354140134f83389f5cc6f7dfb, type: 3}
+  audioClipsTypeEnterFamiliar:
+  - {fileID: 8300000, guid: 0e65e94a4b862c04e9924d98c1094392, type: 3}
+  - {fileID: 8300000, guid: 5fd5cc051cf2f9d44b9e6df6ad8a2d4c, type: 3}
+  - {fileID: 8300000, guid: 9f5fc61dde15e9e409ce771053b90d23, type: 3}
+  - {fileID: 8300000, guid: 56642304388d31e468f00bb3ff173c00, type: 3}
+  - {fileID: 8300000, guid: 03c13bb655e7e9640944aa485f4ba93f, type: 3}
   amountOfDelayBetweenVoicelines: 1
   entityAudioClips: {fileID: 8300000, guid: 2f815a36d64afaf4a8b56bcdef8dbfe3, type: 3}
   nonHostileEntityAudioClip: {fileID: 8300000, guid: 16182ee15e21b674aa1904aa0d76f771, type: 3}
@@ -514,6 +528,31 @@ MonoBehaviour:
           m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
           m_MethodName: SwapMap
           m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    MaxAmountOfAudioSources: 3
+  - allAudioClips:
+    - audioClip: {fileID: 8300000, guid: 1df7fc1354140134f83389f5cc6f7dfb, type: 3}
+      IsVoiceLine: 1
+      PlayedSequently: 1
+    - audioClip: {fileID: 8300000, guid: f0d963cda5ec2fb4694e64aed8e536f5, type: 3}
+      IsVoiceLine: 1
+      PlayedSequently: 1
+    TileTypeToTriggerEvent: 9
+    mapTypeToSwitchTo: 1
+    OnEventCompleted:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1331531350}
+          m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+          m_MethodName: EnableShipEncounter
+          m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

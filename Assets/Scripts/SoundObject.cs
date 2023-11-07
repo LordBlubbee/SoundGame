@@ -7,6 +7,7 @@ public class SoundObject
     public Direction Direction;
     public TileType Type;
     public List<AudioClip> AudioClipsType = new();
+    public List<AudioClip> AudioClipsTypeFamiliar = new();
     public List<AudioClip> AudioClipsDirection = new();
     public bool HasOtherEntity = false;
     public bool HostileEntity = false;
@@ -19,10 +20,21 @@ public class SoundObject
         TileType.House => AudioClipsType[3],
         TileType.Mine => AudioClipsType[4],
         TileType.Body => AudioClipsType[2],
-        TileType.Tree => AudioClipsType[6],
-        TileType.Shack => AudioClipsType[7],
+        TileType.Tree => AudioClipsType[5],
+        TileType.Shack => AudioClipsType[6],
         TileType.Artifact => AudioClipsType[2],
+        TileType.AlienShip => AudioClipsType[7],
         _ => throw new NotImplementedException()
+    };
+
+    public AudioClip AudioClipTypeFamiliar => Type switch
+    {
+        TileType.House => AudioClipsTypeFamiliar[0],
+        TileType.Body => AudioClipsTypeFamiliar[1],
+        TileType.Tree => AudioClipsTypeFamiliar[2],
+        TileType.Shack => AudioClipsTypeFamiliar[3],
+        TileType.Artifact => AudioClipsTypeFamiliar[4],
+        _ => null,
     };
 
     public AudioClip AudioClipDirection => Direction switch

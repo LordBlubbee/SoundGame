@@ -11,6 +11,8 @@ public enum EventType
     UnlockRadar = 6,
     SwapMap = 7,
     GameOver = 8,
+    ShipEncounter = 9,
+    Attack = 10,
 }
 
 public static class EventManager
