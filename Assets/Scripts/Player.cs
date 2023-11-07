@@ -16,6 +16,7 @@ public class Player : Entity
     {
         EventManager.AddListener(EventType.Pause, () => gamePaused = true);
         EventManager.AddListener(EventType.UnPause, () => gamePaused = false);
+        EventManager.AddListener(EventType.SwapMap, StartGame);
     }
 
     public void StartGame()

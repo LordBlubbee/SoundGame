@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -19,17 +18,23 @@ public class AudioClipType
 [Serializable]
 public class AudioEvent
 {
-    [Tooltip("It's order sensitive.")]
+    [Tooltip("It's order sensitive for the seperate clip types, voicelines share an index order with other voicelines, soundeffects share an index order with other soundeffects.")]
     public List<AudioClipType> allAudioClips = new();
 
     [NonSerialized] public bool HasOccured = false;
+
+    [Tooltip("Which tile type will trigger the event upon entering.")]
     public TileType TileTypeToTriggerEvent;
+
+    [Tooltip("Only does something if Applicable.")]
+    [SerializeField] private MapType mapTypeToSwitchTo;
 
     private List<AudioSource> audioSources = new();
     private GameObject audioSourceHolder;
 
-    public UnityEvent OnEventCompleted;
+    public UnityEvent<MapType> OnEventCompleted;
 
+    [Tooltip("The maximum amount of Audio Sources it is allowed to use, (The maximum amount of sounds played in parallel)")]
     public int MaxAmountOfAudioSources = 3;
 
     private List<AudioClip> voiceLines = new();
@@ -152,7 +157,7 @@ public class AudioEvent
                 UnityEngine.Object.Destroy(source);
             }
             EventManager.InvokeEvent(EventType.EventStop);
-            OnEventCompleted?.Invoke();
+            OnEventCompleted?.Invoke(mapTypeToSwitchTo);
         }
     }
 }

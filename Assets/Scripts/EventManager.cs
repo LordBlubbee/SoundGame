@@ -9,6 +9,7 @@ public enum EventType
     EventStart = 4,
     EventStop = 5,
     UnlockRadar = 6,
+    SwapMap = 7,
 }
 
 public static class EventManager

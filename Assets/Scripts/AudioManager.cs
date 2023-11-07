@@ -27,7 +27,9 @@ public class AudioManager : MonoBehaviour
     [Tooltip("The amount of time waited untill the next voiceline will be played, in seconds.")]
     [SerializeField] private float amountOfDelayBetweenVoicelines = 1.0f;
 
+    [Tooltip("The Audio Clip to play if there is an entity in that tile.")]
     [SerializeField] private List<AudioClip> entityAudioClips = new();
+    [Tooltip("The Audio Clip to play if there are no entities in that tile.")]
     [SerializeField] private List<AudioClip> noEntityAudioClips = new();
 
     private readonly List<AudioClip> currentAudioClips = new();
@@ -35,15 +37,19 @@ public class AudioManager : MonoBehaviour
     [Tooltip("Index 0 = Up, 1 = Down, 2 = Left, 3 = Right")]
     [SerializeField] private List<AudioClip> audioClipsDirection = new();
 
+    [Tooltip("Called at the start of a movement sequence.")]
     [SerializeField] private List<AudioClip> copyThat = new();
+
+    [Tooltip("Called once the movement sequence has finished.")]
     [SerializeField] private List<AudioClip> completedAudioClips = new();
 
     [SerializeField] private AudioClip tutorialClip;
+
     private bool gameStarted = false;
     private bool gamePaused = false;
     private bool eventRunning = false;
 
-    [SerializeField] private bool unlockedRadar = false;
+    private bool unlockedRadar = false;
 
     private List<SoundObject> soundObjects = new();
     private Tile currentTile;
@@ -88,6 +94,7 @@ public class AudioManager : MonoBehaviour
         EventManager.AddListener(EventType.EventStart, StartEvent);
         EventManager.AddListener(EventType.EventStop, EndEvent);
         EventManager.AddListener(EventType.UnlockRadar, () => unlockedRadar = true);
+        EventManager.AddListener(EventType.SwapMap, () => StopAllCoroutines());
     }
 
     public void OnMovement(List<SoundObject> soundObjects, Tile tile, bool player)
@@ -166,7 +173,7 @@ public class AudioManager : MonoBehaviour
             }
         }
 
-        AudioClipPlayer.clip = completedAudioClips[UnityEngine.Random.Range(0, completedAudioClips.Count)];
+        AudioClipPlayer.clip = completedAudioClips[Random.Range(0, completedAudioClips.Count)];
         while (AudioClipPlayer.isPlaying)
         {
             yield return new WaitForSeconds(amountOfDelayBetweenVoicelines);

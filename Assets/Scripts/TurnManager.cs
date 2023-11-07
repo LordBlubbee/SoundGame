@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public class TurnManager
 {
@@ -17,8 +16,6 @@ public class TurnManager
             if (entity == this.entities[0]) { continue; }
             entity.CurrentTurn = false;
         }
-
-        Debug.Log(string.Join(",", entities));
     }
 
     public void ChangeTurn()
