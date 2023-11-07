@@ -15,7 +15,7 @@ public class Enemy : Entity
     public void SpawnEnemy()
     {
         IsActive = true;
-        Position = gameManager.GridManager.GetRandomTile().Position;
+        gameManager.GridManager.SetEnemyPosition(this);
     }
 
     private void OnEnable()

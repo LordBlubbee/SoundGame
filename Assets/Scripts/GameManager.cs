@@ -24,6 +24,11 @@ public class GameManager : MonoBehaviour
 
     private List<Entity> entities = new();
 
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
+
     void Start()
     {
         AudioManager = GetComponent<AudioManager>();
@@ -68,10 +73,5 @@ public class GameManager : MonoBehaviour
     public void SwapMap(MapType type)
     {
         GridManager.SwapMap(type);
-    }
-
-    private void OnDisable()
-    {
-        OnGameEnd();
     }
 }

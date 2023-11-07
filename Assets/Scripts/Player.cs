@@ -6,6 +6,25 @@ public class Player : Entity
 
     private bool gamePaused = false;
 
+    [SerializeField] private int health = 3;
+    public int Health
+    {
+        get
+        {
+            return health;
+        }
+        set
+        {
+            health = value;
+            if (health <= 0)
+            {
+                EventManager.InvokeEvent(EventType.GameOver);
+            }
+        }
+
+    }
+
+
     private void Start()
     {
         gameManager = FindObjectOfType<GameManager>();

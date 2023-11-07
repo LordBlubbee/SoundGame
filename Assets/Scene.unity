@@ -246,11 +246,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f8a836e95a940342b7a2023ea552342, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsCreature: 1
   CurrentTurn: 1
   Position: {x: 0, y: 0}
   TurnIndex: 0
-  IsPlayer: 0
-  IsActive: 0
+  IsPlayer: 1
+  IsActive: 1
+  HasVisitedHouseOrTree: 0
+  health: 3
 --- !u!4 &74025386
 Transform:
   m_ObjectHideFlags: 0
@@ -358,27 +361,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 257678aeaa73da84eb920e89f76bcb89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GridManager:
-    GameStarted: 0
-    GamePaused: 0
-  AudioManager: {fileID: 1331531352}
   indexForRestartingScene: 0
-  MapSize: {x: 5, y: 10}
+  MapSize: {x: 5, y: 5}
   predefinedTilesForest:
-  - Visited: 0
+  - HostileEntity: 0
+    Visited: 0
     HasEntity: 0
     Type: 3
     EntitiesInTile: []
-    Position: {x: 2, y: 0}
-  - Visited: 0
+    Position: {x: 1, y: 0}
+  - HostileEntity: 0
+    Visited: 0
     HasEntity: 0
     Type: 4
     EntitiesInTile: []
+    Position: {x: 0, y: 1}
+  - HostileEntity: 0
+    Visited: 0
+    HasEntity: 0
+    Type: 6
+    EntitiesInTile: []
+    Position: {x: 2, y: 0}
+  predefinedTilesMine:
+  - HostileEntity: 0
+    Visited: 0
+    HasEntity: 1
+    Type: 5
+    EntitiesInTile: []
     Position: {x: 1, y: 0}
-  predefinedTilesMine: []
+  - HostileEntity: 0
+    Visited: 0
+    HasEntity: 1
+    Type: 8
+    EntitiesInTile: []
+    Position: {x: 4, y: 0}
   randomTileTypesForest: 000000000100000002000000
   randomTileTypesMine: 000000000100000002000000
-  entities: []
 --- !u!4 &1331531351
 Transform:
   m_ObjectHideFlags: 0
@@ -414,18 +432,22 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ae852305ba8eba349a5ea235ca247aab, type: 3}
   - {fileID: 8300000, guid: ee520f9647a0bb4498aa25f15198ea8f, type: 3}
   - {fileID: 8300000, guid: bcfac4f4e5d4b5a42aabde733485fc97, type: 3}
-  - {fileID: 8300000, guid: a7c96e156b291fc44a96bce34425d4a3, type: 3}
+  - {fileID: 8300000, guid: 0bb8dafae9cb67a46a4caddff2654d10, type: 3}
+  - {fileID: 8300000, guid: 2df93f2437e1e4e42b5069259c9bd9ee, type: 3}
+  - {fileID: 8300000, guid: e7e3c766fdb56824da88aaba0f86a82a, type: 3}
   audioClipsTypeEnter:
   - {fileID: 8300000, guid: 6884b65ccc9b77f4f8b0f11d494572dd, type: 3}
   - {fileID: 8300000, guid: d55680c453b73034a98c4b1166f6e847, type: 3}
   - {fileID: 8300000, guid: 56ae877efc542244ca1ab1ef52c4e9bd, type: 3}
   - {fileID: 8300000, guid: 771377efe42159a45922ea8363f92105, type: 3}
-  - {fileID: 8300000, guid: a7c96e156b291fc44a96bce34425d4a3, type: 3}
+  - {fileID: 8300000, guid: cc4c4216ec15f5a4982b78688bc88d82, type: 3}
+  - {fileID: 8300000, guid: 3ed4cfb6993d6a049aca4fe9041765da, type: 3}
+  - {fileID: 8300000, guid: a559cc2b43eb94a46857f0c17af84cee, type: 3}
+  - {fileID: 8300000, guid: 03acfdadcea0b424fb00775799dbc216, type: 3}
+  - {fileID: 8300000, guid: 9cc243c378410ca4e95a72a8c30c098d, type: 3}
   amountOfDelayBetweenVoicelines: 1
-  entityAudioClips:
-  - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
-  noEntityAudioClips:
-  - {fileID: 8300000, guid: 753eddbae1ff4a54b89350595a859f67, type: 3}
+  entityAudioClips: {fileID: 8300000, guid: 2f815a36d64afaf4a8b56bcdef8dbfe3, type: 3}
+  nonHostileEntityAudioClip: {fileID: 8300000, guid: 16182ee15e21b674aa1904aa0d76f771, type: 3}
   audioClipsDirection:
   - {fileID: 8300000, guid: 43ebd40d09ff37444a219d2b0fe257fe, type: 3}
   - {fileID: 8300000, guid: 75ecbb6b251687145b6df0b879636ba0, type: 3}
@@ -442,28 +464,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 6b0f9c0abd3b5424884517c121bff57c, type: 3}
   - {fileID: 8300000, guid: 7661596a947e3724980bdc07a80f36dd, type: 3}
   tutorialClip: {fileID: 8300000, guid: 2865be8fd75b30441bff7586a461f0c7, type: 3}
-  unlockedRadar: 0
+  hasVisitedHouseOrTree: {fileID: 8300000, guid: 095d06f660469ac43bc2b9c78c0ed23f, type: 3}
   audioEvents:
-  - allAudioClips:
-    - audioClip: {fileID: 8300000, guid: a7c96e156b291fc44a96bce34425d4a3, type: 3}
-      IsVoiceLine: 1
-      PlayedSequently: 0
-    - audioClip: {fileID: 8300000, guid: 2e6508c43d576b04cb9bdc6718fd5a70, type: 3}
-      IsVoiceLine: 1
-      PlayedSequently: 0
-    - audioClip: {fileID: 8300000, guid: e9215a996109e5d4ba83dc2790bfe89c, type: 3}
-      IsVoiceLine: 0
-      PlayedSequently: 0
-    - audioClip: {fileID: 8300000, guid: c977bfaf05d4eb94792c33af341576c8, type: 3}
-      IsVoiceLine: 0
-      PlayedSequently: 0
-    - audioClip: {fileID: 8300000, guid: b5ba02ac2a1c4ab41b79909df8594e64, type: 3}
-      IsVoiceLine: 0
-      PlayedSequently: 1
-    - audioClip: {fileID: 8300000, guid: 6495c731f8f51fa4b907fb84726fb716, type: 3}
-      IsVoiceLine: 0
-      PlayedSequently: 1
-    TileTypeToTriggerEvent: 3
+  - allAudioClips: []
+    TileTypeToTriggerEvent: 6
     mapTypeToSwitchTo: 0
     OnEventCompleted:
       m_PersistentCalls:
@@ -481,25 +485,7 @@ MonoBehaviour:
             m_BoolArgument: 0
           m_CallState: 2
     MaxAmountOfAudioSources: 3
-  - allAudioClips:
-    - audioClip: {fileID: 8300000, guid: a7c96e156b291fc44a96bce34425d4a3, type: 3}
-      IsVoiceLine: 1
-      PlayedSequently: 0
-    - audioClip: {fileID: 8300000, guid: 2e6508c43d576b04cb9bdc6718fd5a70, type: 3}
-      IsVoiceLine: 1
-      PlayedSequently: 0
-    - audioClip: {fileID: 8300000, guid: e9215a996109e5d4ba83dc2790bfe89c, type: 3}
-      IsVoiceLine: 0
-      PlayedSequently: 0
-    - audioClip: {fileID: 8300000, guid: c977bfaf05d4eb94792c33af341576c8, type: 3}
-      IsVoiceLine: 0
-      PlayedSequently: 0
-    - audioClip: {fileID: 8300000, guid: b5ba02ac2a1c4ab41b79909df8594e64, type: 3}
-      IsVoiceLine: 0
-      PlayedSequently: 1
-    - audioClip: {fileID: 8300000, guid: 6495c731f8f51fa4b907fb84726fb716, type: 3}
-      IsVoiceLine: 0
-      PlayedSequently: 1
+  - allAudioClips: []
     TileTypeToTriggerEvent: 0
     mapTypeToSwitchTo: 0
     OnEventCompleted:
@@ -518,25 +504,7 @@ MonoBehaviour:
             m_BoolArgument: 0
           m_CallState: 2
     MaxAmountOfAudioSources: 3
-  - allAudioClips:
-    - audioClip: {fileID: 8300000, guid: a7c96e156b291fc44a96bce34425d4a3, type: 3}
-      IsVoiceLine: 1
-      PlayedSequently: 0
-    - audioClip: {fileID: 8300000, guid: 2e6508c43d576b04cb9bdc6718fd5a70, type: 3}
-      IsVoiceLine: 1
-      PlayedSequently: 0
-    - audioClip: {fileID: 8300000, guid: e9215a996109e5d4ba83dc2790bfe89c, type: 3}
-      IsVoiceLine: 0
-      PlayedSequently: 0
-    - audioClip: {fileID: 8300000, guid: c977bfaf05d4eb94792c33af341576c8, type: 3}
-      IsVoiceLine: 0
-      PlayedSequently: 0
-    - audioClip: {fileID: 8300000, guid: b5ba02ac2a1c4ab41b79909df8594e64, type: 3}
-      IsVoiceLine: 0
-      PlayedSequently: 1
-    - audioClip: {fileID: 8300000, guid: 6495c731f8f51fa4b907fb84726fb716, type: 3}
-      IsVoiceLine: 0
-      PlayedSequently: 1
+  - allAudioClips: []
     TileTypeToTriggerEvent: 4
     mapTypeToSwitchTo: 1
     OnEventCompleted:

@@ -9,6 +9,7 @@ public class SoundObject
     public List<AudioClip> AudioClipsType = new();
     public List<AudioClip> AudioClipsDirection = new();
     public bool HasOtherEntity = false;
+    public bool HostileEntity = false;
 
     public AudioClip AudioClipType => Type switch
     {
@@ -17,6 +18,10 @@ public class SoundObject
         TileType.Plains => AudioClipsType[2],
         TileType.House => AudioClipsType[3],
         TileType.Mine => AudioClipsType[4],
+        TileType.Body => AudioClipsType[2],
+        TileType.Tree => AudioClipsType[6],
+        TileType.Shack => AudioClipsType[7],
+        TileType.Artifact => AudioClipsType[2],
         _ => throw new NotImplementedException()
     };
 

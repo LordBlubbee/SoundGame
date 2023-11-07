@@ -44,8 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 585dd968e18c3fa4884fed251afeb454, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsCreature: 1
   CurrentTurn: 0
-  Player: 0
-  Position: {x: 0, y: 0}
+  Position: {x: 4, y: 9}
   TurnIndex: 0
-  isPlayer: 0
+  IsPlayer: 0
+  IsActive: 0

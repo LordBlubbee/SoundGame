@@ -10,6 +10,7 @@ public enum EventType
     EventStop = 5,
     UnlockRadar = 6,
     SwapMap = 7,
+    GameOver = 8,
 }
 
 public static class EventManager

@@ -98,23 +98,42 @@ public class GridManager
         if (!GameStarted || GamePaused) { return; }
 
         Vector2Int futurePosition = entityToMove.Position + Movement;
-        Tile currentTile = tiles[entityToMove.Position.x, entityToMove.Position.y];
-        currentTile.EntitiesInTile.Remove(entityToMove);
-
-        if (currentTile.EntitiesInTile.Count < 1) { currentTile.HasEntity = false; }
-
         if (futurePosition.x < 0 || futurePosition.y < 0) { return; }
         if (futurePosition.x > mapWidth - 1 || futurePosition.y > mapHeight - 1) { return; }
 
+        if (!entityToMove.IsPlayer && (tiles[futurePosition.x, futurePosition.y].Type == TileType.House || tiles[futurePosition.x, futurePosition.y].Type == TileType.Shack)) { return; }
+
+        Tile currentTile = tiles[entityToMove.Position.x, entityToMove.Position.y];
+        currentTile.EntitiesInTile.Remove(entityToMove);
+
+        if (currentTile.EntitiesInTile.Count < 1) { currentTile.HostileEntity = false; }
+
+
         Tile nextTile = tiles[futurePosition.x, futurePosition.y];
         nextTile.EntitiesInTile.Add(entityToMove);
+
+        if ((nextTile.Type == TileType.House || nextTile.Type == TileType.Tree) && entityToMove.IsPlayer)
+        {
+            entityToMove.HasVisitedHouseOrTree = true;
+        }
 
         entityToMove.Position = nextTile.Position;
 
         SetTileVisited(entityToMove.Position, entityToMove.IsPlayer);
         OnMoveEntity?.Invoke(ReturnNeighbourSoundObjects(entityToMove.Position), nextTile, entityToMove.IsPlayer);
 
-        if (nextTile.EntitiesInTile.Count > 0) { currentTile.HasEntity = true; }
+        if (nextTile.EntitiesInTile.Count > 0) { currentTile.HostileEntity = true; }
+    }
+
+    public void SetEnemyPosition(Entity entity)
+    {
+        if (entity.IsCreature && !entity.IsPlayer)
+        {
+            Tile currentTile = tiles[entity.Position.x, entity.Position.y];
+
+            currentTile.EntitiesInTile.Add(entity);
+            currentTile.HostileEntity = true;
+        }
     }
 
     private List<SoundObject> ReturnNeighbourSoundObjects(Vector2Int position)
@@ -129,6 +148,7 @@ public class GridManager
                 {
                     Direction = Direction.Left,
                     Type = tiles[position.x - 1, position.y].Type,
+                    HostileEntity = tiles[position.x - 1, position.y].HostileEntity,
                     HasOtherEntity = tiles[position.x - 1, position.y].HasEntity
                 };
                 soundObjects.Add(soundObject);
@@ -142,6 +162,7 @@ public class GridManager
                 {
                     Direction = Direction.Right,
                     Type = tiles[position.x + 1, position.y].Type,
+                    HostileEntity = tiles[position.x + 1, position.y].HostileEntity,
                     HasOtherEntity = tiles[position.x + 1, position.y].HasEntity
                 };
                 soundObjects.Add(soundObject);
@@ -155,6 +176,7 @@ public class GridManager
                 {
                     Direction = Direction.Down,
                     Type = tiles[position.x, position.y - 1].Type,
+                    HostileEntity = tiles[position.x, position.y - 1].HostileEntity,
                     HasOtherEntity = tiles[position.x, position.y - 1].HasEntity
                 };
                 soundObjects.Add(soundObject);
@@ -168,6 +190,7 @@ public class GridManager
                 {
                     Direction = Direction.Up,
                     Type = tiles[position.x, position.y + 1].Type,
+                    HostileEntity = tiles[position.x, position.y + 1].HostileEntity,
                     HasOtherEntity = tiles[position.x, position.y + 1].HasEntity
                 };
                 soundObjects.Add(soundObject);

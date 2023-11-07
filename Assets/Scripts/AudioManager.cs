@@ -18,19 +18,19 @@ public class AudioManager : MonoBehaviour
     [Tooltip("Convenient for testing.")]
     [SerializeField] private bool skipTutorial = false;
 
-    [Tooltip("Typing is based on Index; Index 0 is Swamp, 1 River, 2 Plains, 3 House")]
+    [Tooltip("Typing is based on Index; Index 0 is Swamp, 1 River, 2 Plains, 3 House, 4 = Mine, 5 = Tree, 6 = Shack")]
     [SerializeField] private List<AudioClip> audioClipsType = new();
 
-    [Tooltip("Typing is based on Index; Index 0 is Swamp, 1 River, 2 Plains, 3 House")]
+    [Tooltip("Typing is based on Index; Index 0 is Swamp, 1 River, 2 Plains, 3 House, 4 Mine, 5 Body, 6 Tree, 7 Shack, 8 Artifact")]
     [SerializeField] private List<AudioClip> audioClipsTypeEnter = new();
 
     [Tooltip("The amount of time waited untill the next voiceline will be played, in seconds.")]
     [SerializeField] private float amountOfDelayBetweenVoicelines = 1.0f;
 
     [Tooltip("The Audio Clip to play if there is an entity in that tile.")]
-    [SerializeField] private List<AudioClip> entityAudioClips = new();
+    [SerializeField] private AudioClip entityAudioClips;
     [Tooltip("The Audio Clip to play if there are no entities in that tile.")]
-    [SerializeField] private List<AudioClip> noEntityAudioClips = new();
+    [SerializeField] private AudioClip nonHostileEntityAudioClip;
 
     private readonly List<AudioClip> currentAudioClips = new();
 
@@ -44,6 +44,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private List<AudioClip> completedAudioClips = new();
 
     [SerializeField] private AudioClip tutorialClip;
+
+    [SerializeField] private AudioClip hasVisitedHouseOrTree;
 
     private bool gameStarted = false;
     private bool gamePaused = false;
@@ -189,13 +191,26 @@ public class AudioManager : MonoBehaviour
         foreach (SoundObject soundObject in soundObjects)
         {
             if (soundObject.AudioClipDirection == null) { continue; }
+
             currentAudioClips.Add(soundObject.AudioClipDirection);
 
             if (soundObject.AudioClipType == null) { continue; }
-            currentAudioClips.Add(soundObject.AudioClipType);
 
-            if (noEntityAudioClips.Count < 1 || entityAudioClips.Count < 1 || !unlockedRadar) { continue; }
-            currentAudioClips.Add(soundObject.HasOtherEntity ? entityAudioClips[UnityEngine.Random.Range(0, entityAudioClips.Count)] : noEntityAudioClips[UnityEngine.Random.Range(0, entityAudioClips.Count)]);
+            if ((soundObject.Type == TileType.House || soundObject.Type == TileType.Tree) && player.HasVisitedHouseOrTree)
+            {
+                currentAudioClips.Add(hasVisitedHouseOrTree);
+            }
+            else
+            {
+                currentAudioClips.Add(soundObject.AudioClipType);
+            }
+
+            if (!unlockedRadar) { continue; }
+
+            if (soundObject.HasOtherEntity || soundObject.HostileEntity)
+            {
+                currentAudioClips.Add(soundObject.HostileEntity ? entityAudioClips : nonHostileEntityAudioClip);
+            }
         }
     }
 }
