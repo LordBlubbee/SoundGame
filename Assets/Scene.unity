@@ -364,10 +364,20 @@ MonoBehaviour:
   AudioManager: {fileID: 1331531352}
   indexForRestartingScene: 0
   MapSize: {x: 5, y: 10}
-  predefinedTiles:
-  - Type: 3
+  predefinedTilesForest:
+  - Visited: 0
+    HasEntity: 0
+    Type: 3
+    EntitiesInTile: []
+    Position: {x: 2, y: 0}
+  - Visited: 0
+    HasEntity: 0
+    Type: 4
+    EntitiesInTile: []
     Position: {x: 1, y: 0}
-  randomTileTypes: 000000000100000002000000
+  predefinedTilesMine: []
+  randomTileTypesForest: 000000000100000002000000
+  randomTileTypesMine: 000000000100000002000000
   entities: []
 --- !u!4 &1331531351
 Transform:
@@ -404,11 +414,13 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ae852305ba8eba349a5ea235ca247aab, type: 3}
   - {fileID: 8300000, guid: ee520f9647a0bb4498aa25f15198ea8f, type: 3}
   - {fileID: 8300000, guid: bcfac4f4e5d4b5a42aabde733485fc97, type: 3}
+  - {fileID: 8300000, guid: a7c96e156b291fc44a96bce34425d4a3, type: 3}
   audioClipsTypeEnter:
   - {fileID: 8300000, guid: 6884b65ccc9b77f4f8b0f11d494572dd, type: 3}
   - {fileID: 8300000, guid: d55680c453b73034a98c4b1166f6e847, type: 3}
   - {fileID: 8300000, guid: 56ae877efc542244ca1ab1ef52c4e9bd, type: 3}
   - {fileID: 8300000, guid: 771377efe42159a45922ea8363f92105, type: 3}
+  - {fileID: 8300000, guid: a7c96e156b291fc44a96bce34425d4a3, type: 3}
   amountOfDelayBetweenVoicelines: 1
   entityAudioClips:
   - {fileID: 8300000, guid: 2fd5984f00afbda47a4814c45b7a7449, type: 3}
@@ -452,6 +464,7 @@ MonoBehaviour:
       IsVoiceLine: 0
       PlayedSequently: 1
     TileTypeToTriggerEvent: 3
+    mapTypeToSwitchTo: 0
     OnEventCompleted:
       m_PersistentCalls:
         m_Calls:
@@ -488,6 +501,7 @@ MonoBehaviour:
       IsVoiceLine: 0
       PlayedSequently: 1
     TileTypeToTriggerEvent: 0
+    mapTypeToSwitchTo: 0
     OnEventCompleted:
       m_PersistentCalls:
         m_Calls:
@@ -495,6 +509,43 @@ MonoBehaviour:
           m_TargetAssemblyTypeName: SpawnEnemy, Assembly-CSharp
           m_MethodName: SpawnEnemies
           m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    MaxAmountOfAudioSources: 3
+  - allAudioClips:
+    - audioClip: {fileID: 8300000, guid: a7c96e156b291fc44a96bce34425d4a3, type: 3}
+      IsVoiceLine: 1
+      PlayedSequently: 0
+    - audioClip: {fileID: 8300000, guid: 2e6508c43d576b04cb9bdc6718fd5a70, type: 3}
+      IsVoiceLine: 1
+      PlayedSequently: 0
+    - audioClip: {fileID: 8300000, guid: e9215a996109e5d4ba83dc2790bfe89c, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 0
+    - audioClip: {fileID: 8300000, guid: c977bfaf05d4eb94792c33af341576c8, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 0
+    - audioClip: {fileID: 8300000, guid: b5ba02ac2a1c4ab41b79909df8594e64, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 1
+    - audioClip: {fileID: 8300000, guid: 6495c731f8f51fa4b907fb84726fb716, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 1
+    TileTypeToTriggerEvent: 4
+    mapTypeToSwitchTo: 1
+    OnEventCompleted:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1331531350}
+          m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+          m_MethodName: SwapMap
+          m_Mode: 0
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

@@ -7,6 +7,7 @@ public enum TileType
     River = 1,
     Plains = 2,
     House = 3,
+    Mine = 4,
 }
 
 [System.Serializable]

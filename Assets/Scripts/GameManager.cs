@@ -5,27 +5,30 @@ using UnityEngine;
 [RequireComponent(typeof(AudioManager))]
 public class GameManager : MonoBehaviour
 {
-    public GridManager GridManager;
-    public TurnManager TurnManager;
-    public AudioManager AudioManager;
+    public GridManager GridManager { get; private set; }
+    public TurnManager TurnManager { get; private set; }
+    public AudioManager AudioManager { get; private set; }
 
+    [Tooltip("The scene index, used for restarting.")]
     [SerializeField] private int indexForRestartingScene = 0;
 
     [SerializeField] private Vector2Int MapSize = new();
 
-    public event Action OnGameOver;
+    [SerializeField] private List<Tile> predefinedTilesForest = new();
+    [SerializeField] private List<Tile> predefinedTilesMine = new();
 
-    [SerializeField] private List<Tile> predefinedTiles = new();
+    [Tooltip("Which tile Types are used in the random generation.")]
+    [SerializeField] private List<TileType> randomTileTypesForest = new();
+    [Tooltip("Which tile Types are used in the random generation.")]
+    [SerializeField] private List<TileType> randomTileTypesMine = new();
 
-    [SerializeField] private List<TileType> randomTileTypes = new();
-
-    public List<Entity> entities = new();
+    private List<Entity> entities = new();
 
     void Start()
     {
         AudioManager = GetComponent<AudioManager>();
 
-        GridManager = new(MapSize.x, MapSize.y, predefinedTiles, randomTileTypes, this);
+        GridManager = new(MapSize.x, MapSize.y, predefinedTilesForest, predefinedTilesMine, randomTileTypesForest, randomTileTypesMine, this);
         GridManager.OnMoveEntity += AudioManager.OnMovement;
 
         EventManager.AddListener(EventType.StartGame, () => GridManager.GameStarted = true);
@@ -60,8 +63,11 @@ public class GameManager : MonoBehaviour
     {
         EventManager.ClearEvents(true);
         GridManager.OnGameEnd();
-        OnGameOver?.Invoke();
-        OnGameOver = null;
+    }
+
+    public void SwapMap(MapType type)
+    {
+        GridManager.SwapMap(type);
     }
 
     private void OnDisable()

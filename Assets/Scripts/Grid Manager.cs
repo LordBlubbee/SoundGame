@@ -11,6 +11,7 @@ public class GridManager
     private List<Vector2Int> tilePositions = new();
 
     private List<Tile> predefinedTiles = new();
+    private List<Tile> predefinedTilesMines = new();
 
     private int mapWidth;
     private int mapHeight;
@@ -18,24 +19,40 @@ public class GridManager
     public bool GameStarted = false;
     public bool GamePaused = false;
 
-    private List<TileType> tileTypesForRandomGeneration = new();
+    private List<TileType> tileTypesForRandomGenerationForest = new();
+    private List<TileType> tileTypesForRandomGenerationMine = new();
 
     public event Action<List<SoundObject>, Tile, bool> OnMoveEntity;
 
+    private MapData mapData;
+    private MapType currentMapType = MapType.ForestMap;
+
     public void OnGameEnd()
     {
-        GameStarted = false;
         tiles = null;
+        GameStarted = false;
         OnMoveEntity = null;
+        tileTypesForRandomGenerationMine.Clear();
+        tileTypesForRandomGenerationForest.Clear();
+        mapData.ClearMapCollection(true, true);
     }
 
-    public GridManager(int mapWidth, int mapHeight, List<Tile> listOfPredefinedTiles, List<TileType> randomTileTypes, GameManager gameManager = null)
+    public GridManager(int mapWidth, int mapHeight, List<Tile> listOfPredefinedTiles, List<Tile> listOfPredefinedTilesMines, List<TileType> randomTileTypesForest, List<TileType> randomTileTypeMine, GameManager gameManager = null)
     {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
 
-        tileTypesForRandomGeneration.Clear();
-        tileTypesForRandomGeneration.AddRange(randomTileTypes);
+        mapData = ScriptableObject.CreateInstance<MapData>();
+        mapData.SetMapDimensions(mapWidth, mapHeight);
+
+        tileTypesForRandomGenerationForest.Clear();
+        tileTypesForRandomGenerationForest.AddRange(randomTileTypesForest);
+
+        tileTypesForRandomGenerationMine.Clear();
+        tileTypesForRandomGenerationMine.AddRange(randomTileTypeMine);
+
+        predefinedTilesMines.Clear();
+        predefinedTilesMines.AddRange(listOfPredefinedTilesMines);
 
         predefinedTiles.Clear();
         predefinedTiles.AddRange(listOfPredefinedTiles);
@@ -48,6 +65,31 @@ public class GridManager
         Vector2Int position = tilePositions[UnityEngine.Random.Range(0, tilePositions.Count)];
         Tile randomTile = tiles[position.x, position.y];
         return randomTile;
+    }
+
+    public void SwapMap(MapType mapToSwitchTo)
+    {
+        mapData.SetMap(currentMapType, tiles);
+
+        currentMapType = mapToSwitchTo;
+
+        if (mapData.MapExists(mapToSwitchTo))
+        {
+            tilePositions.Clear();
+
+            tiles = mapData.ReturnMap(mapToSwitchTo);
+
+            foreach (Tile tile in tiles)
+            {
+                tilePositions.Add(tile.Position);
+            }
+        }
+        else
+        {
+            currentMapType = mapToSwitchTo;
+
+            GenerateGrid();
+        }
     }
 
     public void MoveEntityInGrid(Entity entityToMove, Vector2Int Movement)
@@ -188,6 +230,7 @@ public class GridManager
     private void GenerateGrid()
     {
         tiles = new Tile[mapWidth, mapHeight];
+        tilePositions.Clear();
 
         for (int x = 0; x < mapWidth; x++)
         {
@@ -203,9 +246,19 @@ public class GridManager
             }
         }
 
-        foreach (Tile predefinedTile in predefinedTiles)
+        if (currentMapType == MapType.ForestMap)
         {
-            tiles[predefinedTile.Position.x, predefinedTile.Position.y] = predefinedTile;
+            foreach (Tile predefinedTile in predefinedTiles)
+            {
+                tiles[predefinedTile.Position.x, predefinedTile.Position.y] = predefinedTile;
+            }
+        }
+        else
+        {
+            foreach (Tile predefinedTile in predefinedTilesMines)
+            {
+                tiles[predefinedTile.Position.x, predefinedTile.Position.y] = predefinedTile;
+            }
         }
     }
 
@@ -213,7 +266,14 @@ public class GridManager
     {
         TileType randomTileType;
 
-        randomTileType = tileTypesForRandomGeneration[UnityEngine.Random.Range(0, tileTypesForRandomGeneration.Count)];
+        if (currentMapType == MapType.ForestMap)
+        {
+            randomTileType = tileTypesForRandomGenerationForest[UnityEngine.Random.Range(0, tileTypesForRandomGenerationForest.Count)];
+        }
+        else
+        {
+            randomTileType = tileTypesForRandomGenerationMine[UnityEngine.Random.Range(0, tileTypesForRandomGenerationMine.Count)];
+        }
 
         return randomTileType;
     }

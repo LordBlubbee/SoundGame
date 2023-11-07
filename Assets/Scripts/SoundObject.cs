@@ -16,6 +16,7 @@ public class SoundObject
         TileType.River => AudioClipsType[1],
         TileType.Plains => AudioClipsType[2],
         TileType.House => AudioClipsType[3],
+        TileType.Mine => AudioClipsType[4],
         _ => throw new NotImplementedException()
     };
 
