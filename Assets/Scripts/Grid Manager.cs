@@ -71,6 +71,13 @@ public class GridManager
     public void SwapMap(MapType mapToSwitchTo)
     {
         EventManager.InvokeEvent(EventType.SwapMap);
+
+        foreach (Tile tile in tiles)
+        {
+            tile.HostileEntity = false;
+            tile.EntitiesInTile.Clear();
+        }
+
         mapData.SetMap(currentMapType, tiles);
 
         currentMapType = mapToSwitchTo;
@@ -112,24 +119,13 @@ public class GridManager
         Tile nextTile = tiles[futurePosition.x, futurePosition.y];
         nextTile.EntitiesInTile.Add(entityToMove);
 
-        if (nextTile.HostileEntity)
+        if (nextTile.HostileEntity && (nextTile.Type != TileType.House && nextTile.Type != TileType.Shack))
         {
             EventManager.InvokeEvent(EventType.Attack);
         }
 
-        if (nextTile.Type == TileType.Artifact && entityToMove.IsPlayer)
-        {
-            entityToMove.HasArtifact = true;
-        }
-
-        if ((nextTile.Type == TileType.House || nextTile.Type == TileType.Tree) && entityToMove.IsPlayer)
-        {
-            entityToMove.HasVisitedHouseOrTree = true;
-        }
-
         entityToMove.Position = nextTile.Position;
 
-        SetTileVisited(entityToMove.Position, entityToMove.IsPlayer);
         OnMoveEntity?.Invoke(ReturnNeighbourSoundObjects(entityToMove.Position), nextTile, entityToMove.IsPlayer);
 
         if (nextTile.EntitiesInTile.Count > 0) { currentTile.HostileEntity = true; }
@@ -210,13 +206,6 @@ public class GridManager
         }
 
         return soundObjects;
-    }
-
-    public void SetTileVisited(Vector2Int position, bool player)
-    {
-        if (!player) { return; }
-
-        tiles[position.x, position.y].Visited = true;
     }
 
     public List<Tile> ReturnNeighbours(Vector2Int position)

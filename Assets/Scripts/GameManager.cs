@@ -26,11 +26,6 @@ public class GameManager : MonoBehaviour
 
     public Player Player;
 
-    private void Awake()
-    {
-        DontDestroyOnLoad(gameObject);
-    }
-
     void Start()
     {
         AudioManager = GetComponent<AudioManager>();
@@ -44,11 +39,10 @@ public class GameManager : MonoBehaviour
         EventManager.AddListener(EventType.Pause, () => GridManager.GamePaused = true);
         EventManager.AddListener(EventType.UnPause, () => GridManager.GamePaused = false);
 
-        //Just to make sure the player is at the start, for convenience.
         Player player = FindObjectOfType<Player>();
         entities.Add(player);
         EventManager.AddListener(EventType.StartGame, player.StartGame);
-        EventManager.AddListener(EventType.SwapMap, player.StartGame);
+        EventManager.AddListener(EventType.ResetPlayer, player.StartGame);
 
         Enemy[] entitiesArray = FindObjectsOfType<Enemy>();
         foreach (Enemy entity in entitiesArray)
@@ -66,7 +60,6 @@ public class GameManager : MonoBehaviour
         EventManager.InvokeEvent(EventType.ShipEncounter);
     }
 
-    //Called through the input script
     public void RestartGame()
     {
         OnGameEnd();

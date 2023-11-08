@@ -21,7 +21,7 @@ public class AudioManager : MonoBehaviour
     [Tooltip("Typing is based on Index; Index 0 is Swamp, 1 River, 2 Plains, 3 House, 4 = Mine, 5 = Tree, 6 = Shack, 7 = AlienShip")]
     [SerializeField] private List<AudioClip> audioClipsType = new();
 
-    [Tooltip("Typing is based on Index; Index 0 is Swamp, 1 River, 2 Plains, 3 House, 4 Mine, 5 Body, 6 Tree, 7 Shack, 8 Artifact, 9 Alienship")]
+    [Tooltip("Typing is based on Index; Index 0 is Swamp, 1 River, 2 Plains, 3 House, 4 Mine, 5 Body, 6 Tree, 7 Shack, 8 Artifact")]
     [SerializeField] private List<AudioClip> audioClipsTypeEnter = new();
 
     [Tooltip("Typing is based on Index; Index 0 is House, 1 Body, 2 Tree, 3 Shack, 4 Artifact.")]
@@ -76,6 +76,9 @@ public class AudioManager : MonoBehaviour
     private Player player;
 
     private bool attack = false;
+    private bool hasSwappedMap = false;
+
+    private Coroutine currentCoroutine;
 
     [SerializeField] private List<AudioEvent> audioEvents = new();
 
@@ -93,7 +96,7 @@ public class AudioManager : MonoBehaviour
     {
         EventManager.InvokeEvent(EventType.Pause);
         eventRunning = true;
-        StopAllCoroutines();
+        StopCoroutine(currentCoroutine);
     }
 
     private void EndEvent()
@@ -110,10 +113,20 @@ public class AudioManager : MonoBehaviour
         EventManager.AddListener(EventType.EventStart, StartEvent);
         EventManager.AddListener(EventType.EventStop, EndEvent);
         EventManager.AddListener(EventType.UnlockRadar, () => unlockedRadar = true);
-        EventManager.AddListener(EventType.SwapMap, StopAllCoroutines);
+        EventManager.AddListener(EventType.SwapMap, OnMapSwap);
         EventManager.AddListener(EventType.Attack, () => attack = true);
         EventManager.AddListener(EventType.ShipEncounter, () => shipEncounter = true);
         EventManager.AddListener(EventType.ShipProgressTrigger, CheckForProgressAdvancement);
+    }
+
+    private void OnMapSwap()
+    {
+        Debug.Log("Map Swapped.");
+        hasSwappedMap = true;
+        StopCoroutine(currentCoroutine);
+        StopAllCoroutines();
+        EventManager.InvokeEvent(EventType.ResetPlayer);
+        EventManager.InvokeEvent(EventType.StartGame);
     }
 
     public void OnMovement(List<SoundObject> soundObjects, Tile tile, bool player)
@@ -123,7 +136,7 @@ public class AudioManager : MonoBehaviour
         EventManager.InvokeEvent(EventType.Pause);
         this.soundObjects = soundObjects;
         currentTile = tile;
-        StartCoroutine(StartAudioSequence(soundObjects, tile));
+        currentCoroutine = StartCoroutine(StartAudioSequence(soundObjects, tile));
     }
 
     private void CheckForProgressAdvancement()
@@ -291,10 +304,14 @@ public class AudioManager : MonoBehaviour
     {
         if (!skipEnter)
         {
-            AudioClipPlayer.clip = copyThat[Random.Range(0, copyThat.Count)];
-            AudioClipPlayer.Play();
+            if (!hasSwappedMap)
+            {
+                AudioClipPlayer.clip = copyThat[Random.Range(0, copyThat.Count)];
+                AudioClipPlayer.Play();
 
-            while (AudioClipPlayer.isPlaying) { yield return new WaitForSeconds(amountOfDelayBetweenVoicelines); }
+                while (AudioClipPlayer.isPlaying) { yield return new WaitForSeconds(amountOfDelayBetweenVoicelines); }
+            }
+            hasSwappedMap = false;
 
             if (attack)
             {
@@ -310,81 +327,103 @@ public class AudioManager : MonoBehaviour
                 yield return null;
             }
         }
-
-        if ((tile.Type == TileType.House || tile.Type == TileType.Tree) && player.HasVisitedHouseOrTree)
+        if (tile.Type != TileType.Mine)
         {
-            AudioClipPlayer.clip = hasVisitedHouseOrTree;
-        }
-        else
-        {
-            switch (tile.Type)
+            if ((tile.Type == TileType.House || tile.Type == TileType.Tree) && player.HasVisitedHouseOrTree)
             {
-                case TileType.House:
-                    {
-                        AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[0];
-                        break;
-                    }
-                case TileType.Body:
-                    {
-                        AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[1];
-                        break;
-                    }
-                case TileType.Tree:
-                    {
-                        AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[2];
-                        break;
-                    }
-                case TileType.Shack:
-                    {
-                        AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[3];
-                        break;
-                    }
-                case TileType.Artifact:
-                    {
-                        AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[4];
-                        break;
-                    }
-                default:
-                    {
-                        AudioClipPlayer.clip = audioClipsTypeEnter[(int)tile.Type];
-                        break;
-                    }
+                AudioClipPlayer.clip = hasVisitedHouseOrTree;
             }
-        }
-
-        AudioClipPlayer.Play();
-
-        while (AudioClipPlayer.isPlaying) { yield return new WaitForSeconds(amountOfDelayBetweenVoicelines); }
-
-        foreach (SoundObject soundObject in _soundObjects)
-        {
-            soundObject.AudioClipsDirection = audioClipsDirection;
-            soundObject.AudioClipsType = audioClipsType;
-            soundObject.AudioClipsTypeFamiliar = audioClipsTypeEnterFamiliar;
-        }
-
-        GetAudioClips(_soundObjects);
-
-        for (int i = 0; i < currentAudioClips.Count; i++)
-        {
-            if (currentAudioClips[i] == null) { continue; }
-
-            AudioClipPlayer.clip = currentAudioClips[i];
+            else
+            {
+                if (tile.Visited)
+                {
+                    Debug.Log(tile.Visited);
+                    switch (tile.Type)
+                    {
+                        case TileType.House:
+                            {
+                                AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[0];
+                                break;
+                            }
+                        case TileType.Body:
+                            {
+                                AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[1];
+                                break;
+                            }
+                        case TileType.Tree:
+                            {
+                                AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[2];
+                                break;
+                            }
+                        case TileType.Shack:
+                            {
+                                AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[3];
+                                break;
+                            }
+                        case TileType.Artifact:
+                            {
+                                AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[4];
+                                break;
+                            }
+                        default:
+                            {
+                                AudioClipPlayer.clip = audioClipsTypeEnter[(int)tile.Type];
+                                break;
+                            }
+                    }
+                }
+                else
+                {
+                    AudioClipPlayer.clip = audioClipsTypeEnter[(int)tile.Type];
+                }
+            }
 
             AudioClipPlayer.Play();
 
+            while (AudioClipPlayer.isPlaying) { yield return new WaitForSeconds(amountOfDelayBetweenVoicelines); }
+
+            foreach (SoundObject soundObject in _soundObjects)
+            {
+                soundObject.AudioClipsDirection = audioClipsDirection;
+                soundObject.AudioClipsType = audioClipsType;
+                soundObject.AudioClipsTypeFamiliar = audioClipsTypeEnterFamiliar;
+            }
+
+            GetAudioClips(_soundObjects);
+
+            for (int i = 0; i < currentAudioClips.Count; i++)
+            {
+                if (currentAudioClips[i] == null) { continue; }
+
+                AudioClipPlayer.clip = currentAudioClips[i];
+
+                AudioClipPlayer.Play();
+
+                while (AudioClipPlayer.isPlaying)
+                {
+                    yield return default;
+                }
+            }
+
+            AudioClipPlayer.clip = completedAudioClips[Random.Range(0, completedAudioClips.Count)];
             while (AudioClipPlayer.isPlaying)
             {
-                yield return default;
+                yield return new WaitForSeconds(amountOfDelayBetweenVoicelines);
             }
+
         }
 
-        AudioClipPlayer.clip = completedAudioClips[Random.Range(0, completedAudioClips.Count)];
-        while (AudioClipPlayer.isPlaying)
+        if (tile.Type == TileType.House || tile.Type == TileType.Tree)
         {
-            yield return new WaitForSeconds(amountOfDelayBetweenVoicelines);
+            player.HasVisitedHouseOrTree = true;
         }
 
+        if (tile.Type == TileType.Artifact)
+        {
+            player.HasArtifact = true;
+        }
+
+        tile.Visited = true;
         EventManager.InvokeEvent(EventType.UnPause);
     }
 

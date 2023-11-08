@@ -15,6 +15,7 @@ public enum EventType
     Attack = 10,
     SpawnEnemyNearPlayer = 11,
     ShipProgressTrigger = 12,
+    ResetPlayer = 13,
 }
 
 public static class EventManager

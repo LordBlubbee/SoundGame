@@ -327,11 +327,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8168710181315893955, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
       propertyPath: Position.x
-      value: 4
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8168710181315893955, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
       propertyPath: Position.y
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
@@ -462,7 +462,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: a559cc2b43eb94a46857f0c17af84cee, type: 3}
   - {fileID: 8300000, guid: 03acfdadcea0b424fb00775799dbc216, type: 3}
   - {fileID: 8300000, guid: 9cc243c378410ca4e95a72a8c30c098d, type: 3}
-  - {fileID: 8300000, guid: 1df7fc1354140134f83389f5cc6f7dfb, type: 3}
   audioClipsTypeEnterFamiliar:
   - {fileID: 8300000, guid: 0e65e94a4b862c04e9924d98c1094392, type: 3}
   - {fileID: 8300000, guid: 5fd5cc051cf2f9d44b9e6df6ad8a2d4c, type: 3}
@@ -583,7 +582,10 @@ MonoBehaviour:
             m_BoolArgument: 0
           m_CallState: 2
     MaxAmountOfAudioSources: 3
-  - allAudioClips: []
+  - allAudioClips:
+    - audioClip: {fileID: 8300000, guid: cc4c4216ec15f5a4982b78688bc88d82, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 0
     TileTypeToTriggerEvent: 4
     mapTypeToSwitchTo: 1
     OnEventCompleted:
@@ -604,11 +606,11 @@ MonoBehaviour:
     MaxAmountOfAudioSources: 3
   - allAudioClips:
     - audioClip: {fileID: 8300000, guid: 1df7fc1354140134f83389f5cc6f7dfb, type: 3}
-      IsVoiceLine: 1
-      PlayedSequently: 1
+      IsVoiceLine: 0
+      PlayedSequently: 0
     - audioClip: {fileID: 8300000, guid: f0d963cda5ec2fb4694e64aed8e536f5, type: 3}
-      IsVoiceLine: 1
-      PlayedSequently: 1
+      IsVoiceLine: 0
+      PlayedSequently: 0
     TileTypeToTriggerEvent: 9
     mapTypeToSwitchTo: 1
     OnEventCompleted:
@@ -617,6 +619,25 @@ MonoBehaviour:
         - m_Target: {fileID: 1331531350}
           m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
           m_MethodName: EnableShipEncounter
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    MaxAmountOfAudioSources: 3
+  - allAudioClips: []
+    TileTypeToTriggerEvent: 2
+    mapTypeToSwitchTo: 1
+    OnEventCompleted:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1331531356}
+          m_TargetAssemblyTypeName: SpawnEnemy, Assembly-CSharp
+          m_MethodName: SpawnEnemies
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}

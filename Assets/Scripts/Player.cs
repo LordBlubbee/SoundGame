@@ -7,6 +7,8 @@ public class Player : Entity
 
     private bool gamePaused = false;
 
+    private bool coroutineIsRunning = false;
+
     [SerializeField] private int health = 3;
     public int Health
     {
@@ -35,21 +37,23 @@ public class Player : Entity
 
     public void StartGame()
     {
-        IsActive = true;
-        Vector2Int movementToTile = (Position - Vector2Int.zero) * -1;
-        Debug.Log(movementToTile);
-        IsActive = true;
-        gameManager.GridManager.MoveEntityInGrid(this, movementToTile);
-        //StartCoroutine(SetPositionOnceGameIsntPaused());
+        if (coroutineIsRunning) { return; }
+
+        coroutineIsRunning = true;
+        StartCoroutine(WaitUntillUnpaused());
     }
 
-    //private IEnumerator SetPositionOnceGameIsntPaused()
-    //{
-    //    while (gamePaused)
-    //    {
-    //        yield return null;
-    //    }
-    //}
+    private IEnumerator WaitUntillUnpaused()
+    {
+        while (gamePaused)
+        {
+            yield return null;
+        }
+        Vector2Int movementToTile = (Position - Vector2Int.zero) * -1;
+        IsActive = true;
+        coroutineIsRunning = false;
+        gameManager.GridManager.MoveEntityInGrid(this, movementToTile);
+    }
 
     private void Update()
     {
