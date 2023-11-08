@@ -59,14 +59,19 @@ public class AudioManager : MonoBehaviour
     [Tooltip("Index Sensitive. 0 and 1 are handled by a seperate event. index 0 progress 2 skip 1 progress 2 regular,")]
     [SerializeField] private List<AudioEvent> SpaceShipEvents = new();
 
-    private bool shipEncounter = false;
     private bool gameStarted = false;
     private bool gamePaused = false;
     private bool eventRunning = false;
 
     private bool unlockedRadar = false;
 
+    private bool spaceShipEvent = false;
+    private bool reloadSoundObjects = false;
+
     private GameManager gameManager;
+
+    //It'll do for now.
+    private Enemy enemy;
 
     private int progressIndex = 0;
 
@@ -82,13 +87,18 @@ public class AudioManager : MonoBehaviour
 
     [SerializeField] private List<AudioEvent> audioEvents = new();
 
-    private void CheckForAudioEvents(Entity currentEntity, Tile currentTile)
+    private IEnumerator CheckForAudioEvents(Entity currentEntity, Tile currentTile)
     {
-        if (!currentEntity.IsPlayer) { return; }
-
-        foreach (AudioEvent audioEvent in audioEvents)
+        if (currentEntity.IsPlayer)
         {
-            audioEvent.CheckForActivation(player.TurnIndex, this, gameObject, currentTile);
+            foreach (AudioEvent audioEvent in audioEvents)
+            {
+                while (eventRunning)
+                {
+                    yield return null;
+                }
+                audioEvent.CheckForActivation(player.TurnIndex, this, gameObject, currentTile);
+            }
         }
     }
 
@@ -102,6 +112,7 @@ public class AudioManager : MonoBehaviour
     private void EndEvent()
     {
         eventRunning = false;
+        if (eventRunning) { return; }
         StartCoroutine(StartAudioSequence(soundObjects, currentTile, true));
     }
 
@@ -115,8 +126,10 @@ public class AudioManager : MonoBehaviour
         EventManager.AddListener(EventType.UnlockRadar, () => unlockedRadar = true);
         EventManager.AddListener(EventType.SwapMap, OnMapSwap);
         EventManager.AddListener(EventType.Attack, () => attack = true);
-        EventManager.AddListener(EventType.ShipEncounter, () => shipEncounter = true);
         EventManager.AddListener(EventType.ShipProgressTrigger, CheckForProgressAdvancement);
+        EventManager.AddListener(EventType.Attack, CheckEnemyAttack);
+        EventManager.AddListener(EventType.ShipEncounter, () => spaceShipEvent = true);
+        EventManager.AddListener(EventType.ReloadSoundObjects, () => reloadSoundObjects = true);
     }
 
     private void OnMapSwap()
@@ -146,37 +159,53 @@ public class AudioManager : MonoBehaviour
             //2 skip
             case 0:
                 {
+                    Debug.Log("Progress 1 skip");
+                    ocurredCheck[0] = true;
                     SpaceShipEvents[progressIndex].TriggerAudioEvent(this, gameObject);
+                    EventManager.InvokeEvent(EventType.SkipEnemyTurn);
                     break;
                 }
             //2 regular
             case 1:
                 {
+                    Debug.Log("Progress 1");
+                    ocurredCheck[0] = true;
                     SpaceShipEvents[progressIndex].TriggerAudioEvent(this, gameObject);
                     break;
                 }
             //3 skip
             case 2:
                 {
+                    Debug.Log("Progress 2 skip");
+                    ocurredCheck[1] = true;
                     SpaceShipEvents[progressIndex].TriggerAudioEvent(this, gameObject);
+                    EventManager.InvokeEvent(EventType.SkipEnemyTurn);
                     break;
                 }
             //3 regular
             case 3:
                 {
+                    Debug.Log("Progress 2 ");
+                    ocurredCheck[1] = true;
                     SpaceShipEvents[progressIndex].TriggerAudioEvent(this, gameObject);
                     break;
                 }
             //4 regular
             case 4:
                 {
+                    Debug.Log("Progress 3 ");
+                    ocurredCheck[2] = true;
                     SpaceShipEvents[progressIndex].TriggerAudioEvent(this, gameObject);
                     break;
                 }
             //Ending
             case 5:
                 {
+                    Debug.Log("Progress 4 ");
+                    ocurredCheck[3] = true;
                     SpaceShipEvents[progressIndex].TriggerAudioEvent(this, gameObject);
+                    EventManager.InvokeEvent(EventType.Pause);
+                    StopAllCoroutines();
                     break;
                 }
         }
@@ -184,11 +213,11 @@ public class AudioManager : MonoBehaviour
 
     private bool[] ocurredCheck = new bool[4];
 
-    private void AdvanceProgress()
+    public void AdvanceProgress()
     {
-        if ((progressIndex == 0 || progressIndex == 1) && ocurredCheck[0] == false)
+        Debug.Log(progressIndex);
+        if (ocurredCheck[0] == false)
         {
-            ocurredCheck[0] = true;
             if (player.HasVisitedHouseOrTree)
             {
                 progressIndex = 0;
@@ -198,7 +227,7 @@ public class AudioManager : MonoBehaviour
                 progressIndex = 1;
             }
         }
-        else if ((progressIndex == 2 || progressIndex == 3) && ocurredCheck[1] == false)
+        else if (ocurredCheck[1] == false)
         {
             if (player.HasArtifact)
             {
@@ -217,15 +246,24 @@ public class AudioManager : MonoBehaviour
         {
             progressIndex = 5;
         }
+        Debug.Log(progressIndex);
     }
 
     private void Start()
     {
+        enemy = FindObjectOfType<Enemy>();
         player = FindObjectOfType<Player>();
 
         gameManager = FindObjectOfType<GameManager>();
 
         StartCoroutine(StartGame());
+    }
+
+    private void CheckEnemyAttack()
+    {
+        if (player.CurrentTurn) { return; }
+
+        CheckAttack();
     }
 
     private void CheckAttack()
@@ -302,8 +340,6 @@ public class AudioManager : MonoBehaviour
 
     private IEnumerator StartAudioSequence(List<SoundObject> _soundObjects, Tile tile, bool skipEnter = false)
     {
-        tile.HostileEntity = tile.EntitiesInTile.Count >= 1;
-
         if (!skipEnter)
         {
             if (!hasSwappedMap)
@@ -321,7 +357,18 @@ public class AudioManager : MonoBehaviour
             }
             else
             {
-                CheckForAudioEvents(player, tile);
+                StartCoroutine(CheckForAudioEvents(player, tile));
+            }
+
+            while (eventRunning)
+            {
+                yield return null;
+            }
+
+            if (spaceShipEvent)
+            {
+                Debug.Log("SpaceShip Event.");
+                CheckForProgressAdvancement();
             }
 
             while (eventRunning)
@@ -329,58 +376,73 @@ public class AudioManager : MonoBehaviour
                 yield return null;
             }
         }
+
+        if (spaceShipEvent)
+        {
+            enemy.SetToRandomNeighbourOfPlayer();
+        }
+
+        if (reloadSoundObjects)
+        {
+            Debug.Log("Reloaded Sound Objects");
+            reloadSoundObjects = false;
+            _soundObjects = gameManager.GridManager.ReturnNeighbourSoundObjects(player.Position);
+        }
+
         if (tile.Type != TileType.Mine)
         {
-            if ((tile.Type == TileType.House || tile.Type == TileType.Tree) && player.HasVisitedHouseOrTree)
+            if (tile.Type != TileType.AlienShip)
             {
-                AudioClipPlayer.clip = hasVisitedHouseOrTree;
-            }
-            else
-            {
-                if (tile.Visited)
+                if ((tile.Type == TileType.House || tile.Type == TileType.Tree) && player.HasVisitedHouseOrTree)
                 {
-                    Debug.Log(tile.Visited);
-                    switch (tile.Type)
-                    {
-                        case TileType.House:
-                            {
-                                AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[0];
-                                break;
-                            }
-                        case TileType.Body:
-                            {
-                                AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[1];
-                                break;
-                            }
-                        case TileType.Tree:
-                            {
-                                AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[2];
-                                break;
-                            }
-                        case TileType.Shack:
-                            {
-                                AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[3];
-                                break;
-                            }
-                        case TileType.Artifact:
-                            {
-                                AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[4];
-                                break;
-                            }
-                        default:
-                            {
-                                AudioClipPlayer.clip = audioClipsTypeEnter[(int)tile.Type];
-                                break;
-                            }
-                    }
+                    AudioClipPlayer.clip = hasVisitedHouseOrTree;
                 }
                 else
                 {
-                    AudioClipPlayer.clip = audioClipsTypeEnter[(int)tile.Type];
+                    if (tile.Visited)
+                    {
+                        Debug.Log(tile.Visited);
+                        switch (tile.Type)
+                        {
+                            case TileType.House:
+                                {
+                                    AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[0];
+                                    break;
+                                }
+                            case TileType.Body:
+                                {
+                                    AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[1];
+                                    break;
+                                }
+                            case TileType.Tree:
+                                {
+                                    AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[2];
+                                    break;
+                                }
+                            case TileType.Shack:
+                                {
+                                    AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[3];
+                                    break;
+                                }
+                            case TileType.Artifact:
+                                {
+                                    AudioClipPlayer.clip = audioClipsTypeEnterFamiliar[4];
+                                    break;
+                                }
+                            default:
+                                {
+                                    AudioClipPlayer.clip = audioClipsTypeEnter[(int)tile.Type];
+                                    break;
+                                }
+                        }
+                    }
+                    else
+                    {
+                        AudioClipPlayer.clip = audioClipsTypeEnter[(int)tile.Type];
+                        AudioClipPlayer.Play();
+                    }
                 }
             }
-
-            AudioClipPlayer.Play();
 
             while (AudioClipPlayer.isPlaying) { yield return new WaitForSeconds(amountOfDelayBetweenVoicelines); }
 
@@ -391,8 +453,10 @@ public class AudioManager : MonoBehaviour
                 soundObject.AudioClipsTypeFamiliar = audioClipsTypeEnterFamiliar;
             }
 
+            Debug.Log("Retrieving Audio Clips.");
             GetAudioClips(_soundObjects);
 
+            Debug.Log("Playing Audio Clips.");
             for (int i = 0; i < currentAudioClips.Count; i++)
             {
                 if (currentAudioClips[i] == null) { continue; }
@@ -425,6 +489,7 @@ public class AudioManager : MonoBehaviour
             player.HasArtifact = true;
         }
 
+        tile.EntitiesInTile.Remove(player);
         tile.Visited = true;
         EventManager.InvokeEvent(EventType.UnPause);
     }
@@ -437,7 +502,7 @@ public class AudioManager : MonoBehaviour
         {
             if (soundObject.AudioClipDirection == null) { continue; }
 
-            if (!soundObject.Tile.Visited || soundObject.Tile.HostileEntity)
+            if (!soundObject.Tile.Visited || soundObject.Tile.EntitiesInTile.Count >= 1)
             {
                 currentAudioClips.Add(soundObject.AudioClipDirection);
             }
@@ -449,12 +514,12 @@ public class AudioManager : MonoBehaviour
                 currentAudioClips.Add(soundObject.AudioClipType);
             }
 
-            if (soundObject.Type == TileType.House && soundObject.HostileEntity)
+            if (soundObject.Type == TileType.House && soundObject.Tile.EntitiesInTile.Count >= 1)
             {
                 currentAudioClips.Add(hideAudioClips[0]);
                 continue;
             }
-            if (soundObject.Type == TileType.Shack && soundObject.HostileEntity)
+            if (soundObject.Type == TileType.Shack && soundObject.Tile.EntitiesInTile.Count >= 1)
             {
                 currentAudioClips.Add(hideAudioClips[1]);
                 continue;
@@ -462,9 +527,9 @@ public class AudioManager : MonoBehaviour
 
             if (!unlockedRadar) { continue; }
 
-            if (soundObject.HasOtherEntity || soundObject.HostileEntity)
+            if (soundObject.HasOtherEntity || soundObject.Tile.EntitiesInTile.Count >= 1)
             {
-                currentAudioClips.Add(soundObject.HostileEntity ? entityAudioClips : nonHostileEntityAudioClip);
+                currentAudioClips.Add(soundObject.Tile.EntitiesInTile.Count >= 1 ? entityAudioClips : nonHostileEntityAudioClip);
             }
         }
     }

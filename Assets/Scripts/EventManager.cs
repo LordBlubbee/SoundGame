@@ -16,6 +16,8 @@ public enum EventType
     SpawnEnemyNearPlayer = 11,
     ShipProgressTrigger = 12,
     ResetPlayer = 13,
+    SkipEnemyTurn = 14,
+    ReloadSoundObjects = 15,
 }
 
 public static class EventManager

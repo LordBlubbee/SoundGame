@@ -11,7 +11,6 @@ public class SoundObject
     public List<AudioClip> AudioClipsTypeFamiliar = new();
     public List<AudioClip> AudioClipsDirection = new();
     public bool HasOtherEntity = false;
-    public bool HostileEntity = false;
 
     public AudioClip AudioClipType => Type switch
     {

@@ -25,15 +25,17 @@ public class GameManager : MonoBehaviour
     private List<Entity> entities = new();
 
     public Player Player;
+    private Enemy enemy;
 
     void Start()
     {
         AudioManager = GetComponent<AudioManager>();
 
-        GridManager = new(MapSize.x, MapSize.y, predefinedTilesForest, predefinedTilesMine, randomTileTypesForest, randomTileTypesMine, this);
-        GridManager.OnMoveEntity += AudioManager.OnMovement;
-
         Player = FindObjectOfType<Player>();
+        enemy = FindObjectOfType<Enemy>();
+
+        GridManager = new(MapSize.x, MapSize.y, predefinedTilesForest, predefinedTilesMine, randomTileTypesForest, randomTileTypesMine, ref Player, ref enemy, this);
+        GridManager.OnMoveEntity += AudioManager.OnMovement;
 
         EventManager.AddListener(EventType.StartGame, () => GridManager.GameStarted = true);
         EventManager.AddListener(EventType.Pause, () => GridManager.GamePaused = true);

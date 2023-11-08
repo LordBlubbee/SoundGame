@@ -51,7 +51,7 @@ public class AudioEvent
 
         if (TurnBasedTrigger)
         {
-            if (turnIndex == TurnToTriggerEvent)
+            if (turnIndex >= TurnToTriggerEvent)
             {
                 TriggerAudioEvent(owner, audioSourceHolder);
             }

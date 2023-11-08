@@ -23,9 +23,6 @@ public class Tile
         Position = new Vector2Int(x, y);
     }
 
-    [Tooltip("Whether or not it has an Enemy. Gets automatically assigned")]
-    public bool HostileEntity = false;
-
     public bool Visited = false;
 
     [Tooltip("Whether or not it has an object.")]

@@ -210,7 +210,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 28457271}
   m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
-  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -263,7 +263,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 74025384}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 29.206322, y: 15.779654, z: -21.651108}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -287,15 +287,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2905213208496743752, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 37.973034
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2905213208496743752, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 20.605951
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2905213208496743752, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -27.143364
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2905213208496743752, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
       propertyPath: m_LocalRotation.w
@@ -327,7 +327,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8168710181315893955, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
       propertyPath: Position.x
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8168710181315893955, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
       propertyPath: Position.y
@@ -371,57 +371,54 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   indexForRestartingScene: 0
-  MapSize: {x: 5, y: 5}
+  MapSize: {x: 6, y: 6}
   predefinedTilesForest:
-  - HostileEntity: 0
-    Visited: 0
+  - Visited: 0
     HasEntity: 0
     Type: 3
     EntitiesInTile: []
-    Position: {x: 2, y: 0}
-  - HostileEntity: 0
-    Visited: 0
+    Position: {x: 3, y: 0}
+  - Visited: 0
     HasEntity: 0
     Type: 4
     EntitiesInTile: []
-    Position: {x: 0, y: 3}
-  - HostileEntity: 0
-    Visited: 0
+    Position: {x: 0, y: 1}
+  - Visited: 0
     HasEntity: 1
     Type: 6
     EntitiesInTile: []
-    Position: {x: 3, y: 0}
-  - HostileEntity: 0
-    Visited: 0
-    HasEntity: 0
-    Type: 0
-    EntitiesInTile: []
     Position: {x: 1, y: 0}
-  - HostileEntity: 0
-    Visited: 0
+  - Visited: 0
     HasEntity: 0
     Type: 2
     EntitiesInTile: []
     Position: {x: 0, y: 0}
   predefinedTilesMine:
-  - HostileEntity: 0
-    Visited: 0
+  - Visited: 0
     HasEntity: 1
     Type: 5
     EntitiesInTile: []
-    Position: {x: 1, y: 0}
-  - HostileEntity: 0
-    Visited: 0
+    Position: {x: 2, y: 0}
+  - Visited: 0
     HasEntity: 1
     Type: 8
     EntitiesInTile: []
     Position: {x: 4, y: 0}
-  - HostileEntity: 0
-    Visited: 0
-    HasEntity: 1
+  - Visited: 0
+    HasEntity: 0
     Type: 9
     EntitiesInTile: []
+    Position: {x: 2, y: 0}
+  - Visited: 0
+    HasEntity: 0
+    Type: 7
+    EntitiesInTile: []
     Position: {x: 0, y: 1}
+  - Visited: 0
+    HasEntity: 0
+    Type: 2
+    EntitiesInTile: []
+    Position: {x: 0, y: 0}
   randomTileTypesForest: 000000000100000002000000
   randomTileTypesMine: 000000000100000002000000
   Player: {fileID: 0}
@@ -433,7 +430,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1331531349}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 14.18195, y: 17.646534, z: -15.434111}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -579,19 +576,21 @@ MonoBehaviour:
           m_CallState: 2
     MaxAmountOfAudioSources: 3
   hasVisitedHouseOrTree: {fileID: 8300000, guid: 095d06f660469ac43bc2b9c78c0ed23f, type: 3}
-  SpaceShipEvents: []
-  audioEvents:
-  - allAudioClips: []
+  SpaceShipEvents:
+  - allAudioClips:
+    - audioClip: {fileID: 8300000, guid: 29ed0f911956d214088181226327732c, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 0
     TurnToTriggerEvent: 0
     TurnBasedTrigger: 0
-    TileTypeToTriggerEvent: 6
+    TileTypeToTriggerEvent: 0
     mapTypeToSwitchTo: 0
     OnEventCompleted:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 1331531357}
-          m_TargetAssemblyTypeName: UnlockRadar, Assembly-CSharp
-          m_MethodName: UnlockRadarFunction
+        - m_Target: {fileID: 1331531352}
+          m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
+          m_MethodName: AdvanceProgress
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -601,7 +600,128 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-    MaxAmountOfAudioSources: 3
+    MaxAmountOfAudioSources: 4
+  - allAudioClips:
+    - audioClip: {fileID: 8300000, guid: 32f878e88698c2f438cc19bddaad3e79, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 0
+    TurnToTriggerEvent: 0
+    TurnBasedTrigger: 0
+    TileTypeToTriggerEvent: 0
+    mapTypeToSwitchTo: 0
+    OnEventCompleted:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1331531352}
+          m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
+          m_MethodName: AdvanceProgress
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    MaxAmountOfAudioSources: 4
+  - allAudioClips:
+    - audioClip: {fileID: 8300000, guid: 64fbebdb97a749d4d896c5631ded55c1, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 0
+    TurnToTriggerEvent: 0
+    TurnBasedTrigger: 0
+    TileTypeToTriggerEvent: 0
+    mapTypeToSwitchTo: 0
+    OnEventCompleted:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1331531352}
+          m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
+          m_MethodName: AdvanceProgress
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    MaxAmountOfAudioSources: 4
+  - allAudioClips:
+    - audioClip: {fileID: 8300000, guid: 893a2ea9d0c7cb344b7d854b06e94ec0, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 0
+    TurnToTriggerEvent: 0
+    TurnBasedTrigger: 0
+    TileTypeToTriggerEvent: 0
+    mapTypeToSwitchTo: 0
+    OnEventCompleted:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1331531352}
+          m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
+          m_MethodName: AdvanceProgress
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    MaxAmountOfAudioSources: 4
+  - allAudioClips:
+    - audioClip: {fileID: 8300000, guid: 26d1db647c2e1c7429d573b2e93d2512, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 0
+    TurnToTriggerEvent: 0
+    TurnBasedTrigger: 0
+    TileTypeToTriggerEvent: 0
+    mapTypeToSwitchTo: 0
+    OnEventCompleted:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1331531352}
+          m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
+          m_MethodName: AdvanceProgress
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    MaxAmountOfAudioSources: 4
+  - allAudioClips:
+    - audioClip: {fileID: 8300000, guid: 2575d81d82ca4064a8a3ea04c7eb341e, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 0
+    TurnToTriggerEvent: 0
+    TurnBasedTrigger: 0
+    TileTypeToTriggerEvent: 0
+    mapTypeToSwitchTo: 0
+    OnEventCompleted:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1331531352}
+          m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
+          m_MethodName: AdvanceProgress
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    MaxAmountOfAudioSources: 4
+  audioEvents:
   - allAudioClips:
     - audioClip: {fileID: 8300000, guid: cc4c4216ec15f5a4982b78688bc88d82, type: 3}
       IsVoiceLine: 0
@@ -797,7 +917,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 85c953b20f0103a479be4d2d91b1f3ab, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.3
+  m_Volume: 0.15
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -1031,7 +1151,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1380989327}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

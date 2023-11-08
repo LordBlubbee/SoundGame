@@ -13,6 +13,8 @@ public class Player : Entity
             {
                 Debug.Log("Game Over.");
                 EventManager.InvokeEvent(EventType.GameOver);
+                EventManager.InvokeEvent(EventType.Pause);
+                StopAllCoroutines();
             }
         }
     }
