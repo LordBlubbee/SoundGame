@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Player : Entity
@@ -30,14 +31,25 @@ public class Player : Entity
     {
         EventManager.AddListener(EventType.Pause, () => gamePaused = true);
         EventManager.AddListener(EventType.UnPause, () => gamePaused = false);
-        EventManager.AddListener(EventType.SwapMap, StartGame);
     }
 
     public void StartGame()
     {
         IsActive = true;
-        gameManager.GridManager.MoveEntityInGrid(this, new Vector2Int(0, 0));
+        Vector2Int movementToTile = (Position - Vector2Int.zero) * -1;
+        Debug.Log(movementToTile);
+        IsActive = true;
+        gameManager.GridManager.MoveEntityInGrid(this, movementToTile);
+        //StartCoroutine(SetPositionOnceGameIsntPaused());
     }
+
+    //private IEnumerator SetPositionOnceGameIsntPaused()
+    //{
+    //    while (gamePaused)
+    //    {
+    //        yield return null;
+    //    }
+    //}
 
     private void Update()
     {

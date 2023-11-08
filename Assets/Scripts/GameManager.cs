@@ -47,7 +47,8 @@ public class GameManager : MonoBehaviour
         //Just to make sure the player is at the start, for convenience.
         Player player = FindObjectOfType<Player>();
         entities.Add(player);
-        EventManager.AddListener(EventType.StartGame, () => player.StartGame());
+        EventManager.AddListener(EventType.StartGame, player.StartGame);
+        EventManager.AddListener(EventType.SwapMap, player.StartGame);
 
         Enemy[] entitiesArray = FindObjectsOfType<Enemy>();
         foreach (Enemy entity in entitiesArray)
@@ -81,6 +82,5 @@ public class GameManager : MonoBehaviour
     public void SwapMap(MapType type)
     {
         GridManager.SwapMap(type);
-        EventManager.InvokeEvent(EventType.SwapMap);
     }
 }

@@ -96,7 +96,7 @@ public class GridManager
 
     public void MoveEntityInGrid(Entity entityToMove, Vector2Int Movement)
     {
-        if (!GameStarted || GamePaused) { return; }
+        if (!GameStarted) { return; }
 
         Vector2Int futurePosition = entityToMove.Position + Movement;
         if (futurePosition.x < 0 || futurePosition.y < 0) { return; }
