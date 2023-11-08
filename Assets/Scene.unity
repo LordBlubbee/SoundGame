@@ -378,19 +378,31 @@ MonoBehaviour:
     HasEntity: 0
     Type: 3
     EntitiesInTile: []
-    Position: {x: 1, y: 0}
+    Position: {x: 2, y: 0}
   - HostileEntity: 0
     Visited: 0
     HasEntity: 0
     Type: 4
     EntitiesInTile: []
-    Position: {x: 0, y: 1}
+    Position: {x: 0, y: 3}
   - HostileEntity: 0
     Visited: 0
     HasEntity: 1
     Type: 6
     EntitiesInTile: []
-    Position: {x: 2, y: 0}
+    Position: {x: 3, y: 0}
+  - HostileEntity: 0
+    Visited: 0
+    HasEntity: 0
+    Type: 0
+    EntitiesInTile: []
+    Position: {x: 1, y: 0}
+  - HostileEntity: 0
+    Visited: 0
+    HasEntity: 0
+    Type: 2
+    EntitiesInTile: []
+    Position: {x: 0, y: 0}
   predefinedTilesMine:
   - HostileEntity: 0
     Visited: 0
@@ -498,6 +510,8 @@ MonoBehaviour:
     - audioClip: {fileID: 8300000, guid: 5a8c05ea5516f1147874afcaa6b2ec05, type: 3}
       IsVoiceLine: 0
       PlayedSequently: 0
+    TurnToTriggerEvent: 0
+    TurnBasedTrigger: 0
     TileTypeToTriggerEvent: 2
     mapTypeToSwitchTo: 0
     OnEventCompleted:
@@ -520,6 +534,8 @@ MonoBehaviour:
     - audioClip: {fileID: 8300000, guid: 6522b50f9c3536349a708a0b4129e31c, type: 3}
       IsVoiceLine: 0
       PlayedSequently: 0
+    TurnToTriggerEvent: 0
+    TurnBasedTrigger: 0
     TileTypeToTriggerEvent: 2
     mapTypeToSwitchTo: 0
     OnEventCompleted:
@@ -542,6 +558,8 @@ MonoBehaviour:
     - audioClip: {fileID: 8300000, guid: 0d3efce185fd4944ca469a83fbe76934, type: 3}
       IsVoiceLine: 0
       PlayedSequently: 0
+    TurnToTriggerEvent: 0
+    TurnBasedTrigger: 0
     TileTypeToTriggerEvent: 2
     mapTypeToSwitchTo: 0
     OnEventCompleted:
@@ -564,6 +582,8 @@ MonoBehaviour:
   SpaceShipEvents: []
   audioEvents:
   - allAudioClips: []
+    TurnToTriggerEvent: 0
+    TurnBasedTrigger: 0
     TileTypeToTriggerEvent: 6
     mapTypeToSwitchTo: 0
     OnEventCompleted:
@@ -586,6 +606,8 @@ MonoBehaviour:
     - audioClip: {fileID: 8300000, guid: cc4c4216ec15f5a4982b78688bc88d82, type: 3}
       IsVoiceLine: 0
       PlayedSequently: 0
+    TurnToTriggerEvent: 0
+    TurnBasedTrigger: 0
     TileTypeToTriggerEvent: 4
     mapTypeToSwitchTo: 1
     OnEventCompleted:
@@ -611,6 +633,8 @@ MonoBehaviour:
     - audioClip: {fileID: 8300000, guid: f0d963cda5ec2fb4694e64aed8e536f5, type: 3}
       IsVoiceLine: 0
       PlayedSequently: 0
+    TurnToTriggerEvent: 0
+    TurnBasedTrigger: 0
     TileTypeToTriggerEvent: 9
     mapTypeToSwitchTo: 1
     OnEventCompleted:
@@ -629,8 +653,13 @@ MonoBehaviour:
             m_BoolArgument: 0
           m_CallState: 2
     MaxAmountOfAudioSources: 3
-  - allAudioClips: []
-    TileTypeToTriggerEvent: 2
+  - allAudioClips:
+    - audioClip: {fileID: 8300000, guid: b5e8924d62821e34b9fe9a3d2464c494, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 0
+    TurnToTriggerEvent: 3
+    TurnBasedTrigger: 1
+    TileTypeToTriggerEvent: 9
     mapTypeToSwitchTo: 1
     OnEventCompleted:
       m_PersistentCalls:
@@ -638,6 +667,18 @@ MonoBehaviour:
         - m_Target: {fileID: 1331531356}
           m_TargetAssemblyTypeName: SpawnEnemy, Assembly-CSharp
           m_MethodName: SpawnEnemies
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 1331531357}
+          m_TargetAssemblyTypeName: UnlockRadar, Assembly-CSharp
+          m_MethodName: UnlockRadarFunction
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}

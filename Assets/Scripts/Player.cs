@@ -3,13 +3,6 @@ using UnityEngine;
 
 public class Player : Entity
 {
-    private GameManager gameManager;
-
-    private bool gamePaused = false;
-
-    private bool coroutineIsRunning = false;
-
-    [SerializeField] private int health = 3;
     public int Health
     {
         get => health;
@@ -18,9 +11,24 @@ public class Player : Entity
             health = value;
             if (health <= 0)
             {
+                Debug.Log("Game Over.");
                 EventManager.InvokeEvent(EventType.GameOver);
             }
         }
+    }
+
+    [SerializeField] private int health = 3;
+
+    private GameManager gameManager;
+    private bool gamePaused = false;
+    private bool coroutineIsRunning = false;
+
+    public void StartGame()
+    {
+        if (coroutineIsRunning) { return; }
+
+        coroutineIsRunning = true;
+        StartCoroutine(WaitUntillUnpaused());
     }
 
     private void Start()
@@ -33,14 +41,6 @@ public class Player : Entity
     {
         EventManager.AddListener(EventType.Pause, () => gamePaused = true);
         EventManager.AddListener(EventType.UnPause, () => gamePaused = false);
-    }
-
-    public void StartGame()
-    {
-        if (coroutineIsRunning) { return; }
-
-        coroutineIsRunning = true;
-        StartCoroutine(WaitUntillUnpaused());
     }
 
     private IEnumerator WaitUntillUnpaused()

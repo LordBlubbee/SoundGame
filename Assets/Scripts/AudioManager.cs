@@ -88,7 +88,7 @@ public class AudioManager : MonoBehaviour
 
         foreach (AudioEvent audioEvent in audioEvents)
         {
-            audioEvent.CheckForActivation(this, gameObject, currentTile);
+            audioEvent.CheckForActivation(player.TurnIndex, this, gameObject, currentTile);
         }
     }
 
@@ -302,6 +302,8 @@ public class AudioManager : MonoBehaviour
 
     private IEnumerator StartAudioSequence(List<SoundObject> _soundObjects, Tile tile, bool skipEnter = false)
     {
+        tile.HostileEntity = tile.EntitiesInTile.Count >= 1;
+
         if (!skipEnter)
         {
             if (!hasSwappedMap)
@@ -435,11 +437,17 @@ public class AudioManager : MonoBehaviour
         {
             if (soundObject.AudioClipDirection == null) { continue; }
 
-            currentAudioClips.Add(soundObject.AudioClipDirection);
+            if (!soundObject.Tile.Visited || soundObject.Tile.HostileEntity)
+            {
+                currentAudioClips.Add(soundObject.AudioClipDirection);
+            }
 
             if (soundObject.AudioClipType == null) { continue; }
 
-            currentAudioClips.Add(soundObject.AudioClipType);
+            if (!soundObject.Tile.Visited)
+            {
+                currentAudioClips.Add(soundObject.AudioClipType);
+            }
 
             if (soundObject.Type == TileType.House && soundObject.HostileEntity)
             {

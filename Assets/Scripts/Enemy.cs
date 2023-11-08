@@ -15,8 +15,6 @@ public class Enemy : Entity
 
     public void SetToRandomNeighbourOfPlayer()
     {
-        if (!CurrentTurn || gamePaused) { return; }
-
         List<Tile> neighbourTiles = gameManager.GridManager.ReturnNeighbours(gameManager.Player.Position);
 
         Tile randomTile = neighbourTiles[Random.Range(0, neighbourTiles.Count)];
@@ -38,22 +36,28 @@ public class Enemy : Entity
         EventManager.AddListener(EventType.Pause, () => gamePaused = true);
         EventManager.AddListener(EventType.UnPause, () => gamePaused = false);
         EventManager.AddListener(EventType.ShipEncounter, () => spaceShipEvent = true);
-        EventManager.AddListener(EventType.SpawnEnemyNearPlayer, SetToRandomNeighbourOfPlayer);
     }
 
     private void Update()
     {
         if (!CurrentTurn || gamePaused) { return; }
 
-        List<Tile> neighbourTiles = gameManager.GridManager.ReturnNeighbours(Position);
+        if (spaceShipEvent)
+        {
+            SetToRandomNeighbourOfPlayer();
+        }
+        else
+        {
+            List<Tile> neighbourTiles = gameManager.GridManager.ReturnNeighbours(Position);
 
-        Tile randomTile = neighbourTiles[Random.Range(0, neighbourTiles.Count)];
+            Tile randomTile = neighbourTiles[Random.Range(0, neighbourTiles.Count)];
 
-        Debug.Log($"Current Position = {Position}, Tile Position = {randomTile.Position}");
-        Vector2Int movementToTile = (Position - randomTile.Position) * -1;
-        Debug.Log(movementToTile);
+            Debug.Log($"Current Position = {Position}, Tile Position = {randomTile.Position}");
+            Vector2Int movementToTile = (Position - randomTile.Position) * -1;
+            Debug.Log(movementToTile);
 
-        gameManager.GridManager.MoveEntityInGrid(this, movementToTile);
+            gameManager.GridManager.MoveEntityInGrid(this, movementToTile);
+        }
 
         gameManager.TurnManager.ChangeTurn();
     }

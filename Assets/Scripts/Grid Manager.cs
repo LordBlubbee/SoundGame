@@ -1,13 +1,16 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 
 [Serializable]
 public class GridManager
 {
-    [SerializeField] private Tile[,] tiles;
+    public event Action<List<SoundObject>, Tile, bool> OnMoveEntity;
 
+    public bool GameStarted = false;
+    public bool GamePaused = false;
+
+    [SerializeField] private Tile[,] tiles;
     //For Convenience when picking a random Tile.
     private List<Vector2Int> tilePositions = new();
 
@@ -17,13 +20,8 @@ public class GridManager
     private int mapWidth;
     private int mapHeight;
 
-    public bool GameStarted = false;
-    public bool GamePaused = false;
-
     private List<TileType> tileTypesForRandomGenerationForest = new();
     private List<TileType> tileTypesForRandomGenerationMine = new();
-
-    public event Action<List<SoundObject>, Tile, bool> OnMoveEntity;
 
     private MapData mapData;
     private MapType currentMapType = MapType.ForestMap;
@@ -113,14 +111,15 @@ public class GridManager
 
         Tile currentTile = tiles[entityToMove.Position.x, entityToMove.Position.y];
         currentTile.EntitiesInTile.Remove(entityToMove);
-
-        if (currentTile.EntitiesInTile.Count < 1) { currentTile.HostileEntity = false; }
+        currentTile.HostileEntity = currentTile.EntitiesInTile.Count >= 1;
 
         Tile nextTile = tiles[futurePosition.x, futurePosition.y];
         nextTile.EntitiesInTile.Add(entityToMove);
+        nextTile.HostileEntity = nextTile.EntitiesInTile.Count >= 1;
 
         if (nextTile.HostileEntity && (nextTile.Type != TileType.House && nextTile.Type != TileType.Shack))
         {
+            Debug.Log("Attack.");
             EventManager.InvokeEvent(EventType.Attack);
         }
 
@@ -128,7 +127,6 @@ public class GridManager
 
         OnMoveEntity?.Invoke(ReturnNeighbourSoundObjects(entityToMove.Position), nextTile, entityToMove.IsPlayer);
 
-        if (nextTile.EntitiesInTile.Count > 0) { currentTile.HostileEntity = true; }
     }
 
     public void SetEnemyPosition(Entity entity)
@@ -150,56 +148,60 @@ public class GridManager
 
         if (position.x - 1 >= 0)
         {
-            if (tiles[position.x - 1, position.y] != null && !tiles[position.x - 1, position.y].Visited)
+            if (tiles[position.x - 1, position.y] != null)
             {
                 SoundObject soundObject = new()
                 {
                     Direction = Direction.Left,
                     Type = tiles[position.x - 1, position.y].Type,
                     HostileEntity = tiles[position.x - 1, position.y].HostileEntity,
-                    HasOtherEntity = tiles[position.x - 1, position.y].HasEntity
+                    HasOtherEntity = tiles[position.x - 1, position.y].HasEntity,
+                    Tile = tiles[position.x - 1, position.y],
                 };
                 soundObjects.Add(soundObject);
             }
         }
         if (position.x + 1 < mapWidth - 1)
         {
-            if (tiles[position.x + 1, position.y] != null && !tiles[position.x + 1, position.y].Visited)
+            if (tiles[position.x + 1, position.y] != null)
             {
                 SoundObject soundObject = new()
                 {
                     Direction = Direction.Right,
                     Type = tiles[position.x + 1, position.y].Type,
                     HostileEntity = tiles[position.x + 1, position.y].HostileEntity,
-                    HasOtherEntity = tiles[position.x + 1, position.y].HasEntity
+                    HasOtherEntity = tiles[position.x + 1, position.y].HasEntity,
+                    Tile = tiles[position.x + 1, position.y],
                 };
                 soundObjects.Add(soundObject);
             }
         }
         if (position.y - 1 >= 0)
         {
-            if (tiles[position.x, position.y - 1] != null && !tiles[position.x, position.y - 1].Visited)
+            if (tiles[position.x, position.y - 1] != null)
             {
                 SoundObject soundObject = new()
                 {
                     Direction = Direction.Down,
                     Type = tiles[position.x, position.y - 1].Type,
                     HostileEntity = tiles[position.x, position.y - 1].HostileEntity,
-                    HasOtherEntity = tiles[position.x, position.y - 1].HasEntity
+                    HasOtherEntity = tiles[position.x, position.y - 1].HasEntity,
+                    Tile = tiles[position.x, position.y - 1],
                 };
                 soundObjects.Add(soundObject);
             }
         }
         if (position.y + 1 < mapHeight - 1)
         {
-            if (tiles[position.x, position.y + 1] != null && !tiles[position.x, position.y + 1].Visited)
+            if (tiles[position.x, position.y + 1] != null)
             {
                 SoundObject soundObject = new()
                 {
                     Direction = Direction.Up,
                     Type = tiles[position.x, position.y + 1].Type,
                     HostileEntity = tiles[position.x, position.y + 1].HostileEntity,
-                    HasOtherEntity = tiles[position.x, position.y + 1].HasEntity
+                    HasOtherEntity = tiles[position.x, position.y + 1].HasEntity,
+                    Tile = tiles[position.x, position.y + 1],
                 };
                 soundObjects.Add(soundObject);
             }

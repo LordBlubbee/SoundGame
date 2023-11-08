@@ -21,9 +21,14 @@ public class AudioEvent
     [Tooltip("It's order sensitive for the seperate clip types, voicelines share an index order with other voicelines, soundeffects share an index order with other soundeffects.")]
     public List<AudioClipType> allAudioClips = new();
 
+    [Tooltip("Can be left at 0 if you wish to use the tile for detection.")]
+    public int TurnToTriggerEvent = 0;
+
+    public bool TurnBasedTrigger = false;
+
     [NonSerialized] public bool HasOccured = false;
 
-    [Tooltip("Which tile type will trigger the event upon entering.")]
+    [Tooltip("Which tile type will trigger the event upon entering. Ignored if the turn based trigger is selected.")]
     public TileType TileTypeToTriggerEvent;
 
     [Tooltip("Only does something if Applicable.")]
@@ -40,11 +45,18 @@ public class AudioEvent
     private List<AudioClip> voiceLines = new();
     private List<AudioClipType> soundEffects = new();
 
-    public void CheckForActivation(MonoBehaviour owner, GameObject audioSourceHolder, Tile currentTile)
+    public void CheckForActivation(int turnIndex, MonoBehaviour owner, GameObject audioSourceHolder, Tile currentTile)
     {
         if (HasOccured) { return; }
 
-        if (currentTile.Type == TileTypeToTriggerEvent)
+        if (TurnBasedTrigger)
+        {
+            if (turnIndex == TurnToTriggerEvent)
+            {
+                TriggerAudioEvent(owner, audioSourceHolder);
+            }
+        }
+        else if (currentTile.Type == TileTypeToTriggerEvent)
         {
             TriggerAudioEvent(owner, audioSourceHolder);
         }

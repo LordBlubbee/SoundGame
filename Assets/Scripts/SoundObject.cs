@@ -6,6 +6,7 @@ public class SoundObject
 {
     public Direction Direction;
     public TileType Type;
+    public Tile Tile;
     public List<AudioClip> AudioClipsType = new();
     public List<AudioClip> AudioClipsTypeFamiliar = new();
     public List<AudioClip> AudioClipsDirection = new();
