@@ -253,6 +253,7 @@ MonoBehaviour:
   IsPlayer: 1
   IsActive: 1
   HasVisitedHouseOrTree: 0
+  HasArtifact: 0
   health: 3
 --- !u!4 &74025386
 Transform:
@@ -323,6 +324,14 @@ PrefabInstance:
     - target: {fileID: 2905213208496743752, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8168710181315893955, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
+      propertyPath: Position.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8168710181315893955, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
+      propertyPath: Position.y
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 45a63627cc545c747a5aee03288fada0, type: 3}
@@ -400,9 +409,10 @@ MonoBehaviour:
     HasEntity: 1
     Type: 9
     EntitiesInTile: []
-    Position: {x: 0, y: 3}
+    Position: {x: 0, y: 1}
   randomTileTypesForest: 000000000100000002000000
   randomTileTypesMine: 000000000100000002000000
+  Player: {fileID: 0}
 --- !u!4 &1331531351
 Transform:
   m_ObjectHideFlags: 0
@@ -477,18 +487,26 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 6cf5f7f57ca92ae438e3d7ec6f885e05, type: 3}
   - {fileID: 8300000, guid: 6b0f9c0abd3b5424884517c121bff57c, type: 3}
   - {fileID: 8300000, guid: 7661596a947e3724980bdc07a80f36dd, type: 3}
+  hideAudioClips:
+  - {fileID: 0}
+  - {fileID: 0}
   tutorialClip: {fileID: 8300000, guid: 2865be8fd75b30441bff7586a461f0c7, type: 3}
-  hasVisitedHouseOrTree: {fileID: 8300000, guid: 095d06f660469ac43bc2b9c78c0ed23f, type: 3}
-  audioEvents:
-  - allAudioClips: []
-    TileTypeToTriggerEvent: 6
+  AttackEvents:
+  - allAudioClips:
+    - audioClip: {fileID: 8300000, guid: 3abc102f21b2c75469a1cc58fd394ec8, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 0
+    - audioClip: {fileID: 8300000, guid: 5a8c05ea5516f1147874afcaa6b2ec05, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 0
+    TileTypeToTriggerEvent: 2
     mapTypeToSwitchTo: 0
     OnEventCompleted:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 1331531357}
-          m_TargetAssemblyTypeName: UnlockRadar, Assembly-CSharp
-          m_MethodName: UnlockRadarFunction
+        - m_Target: {fileID: 1331531352}
+          m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
+          m_MethodName: Attack
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -499,15 +517,62 @@ MonoBehaviour:
             m_BoolArgument: 0
           m_CallState: 2
     MaxAmountOfAudioSources: 3
-  - allAudioClips: []
-    TileTypeToTriggerEvent: 0
+  - allAudioClips:
+    - audioClip: {fileID: 8300000, guid: 6522b50f9c3536349a708a0b4129e31c, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 0
+    TileTypeToTriggerEvent: 2
     mapTypeToSwitchTo: 0
     OnEventCompleted:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 1331531356}
-          m_TargetAssemblyTypeName: SpawnEnemy, Assembly-CSharp
-          m_MethodName: SpawnEnemies
+        - m_Target: {fileID: 1331531352}
+          m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
+          m_MethodName: Attack
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    MaxAmountOfAudioSources: 3
+  - allAudioClips:
+    - audioClip: {fileID: 8300000, guid: 0d3efce185fd4944ca469a83fbe76934, type: 3}
+      IsVoiceLine: 0
+      PlayedSequently: 0
+    TileTypeToTriggerEvent: 2
+    mapTypeToSwitchTo: 0
+    OnEventCompleted:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1331531352}
+          m_TargetAssemblyTypeName: AudioManager, Assembly-CSharp
+          m_MethodName: Attack
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    MaxAmountOfAudioSources: 3
+  hasVisitedHouseOrTree: {fileID: 8300000, guid: 095d06f660469ac43bc2b9c78c0ed23f, type: 3}
+  SpaceShipEvents: []
+  audioEvents:
+  - allAudioClips: []
+    TileTypeToTriggerEvent: 6
+    mapTypeToSwitchTo: 0
+    OnEventCompleted:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1331531357}
+          m_TargetAssemblyTypeName: UnlockRadar, Assembly-CSharp
+          m_MethodName: UnlockRadarFunction
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}

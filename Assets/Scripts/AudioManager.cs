@@ -51,7 +51,7 @@ public class AudioManager : MonoBehaviour
 
     [SerializeField] private AudioClip tutorialClip;
 
-    [Tooltip("Index Sensitive, 0 is attack 1, 1 attack 2, 2 attack 3.The on completed gets filled automatically and can be ignored, unless further function is desired. Tile to Trigger can also be ignored. Trigger for it can be found in the code, under Attack()")]
+    [Tooltip("Index Sensitive, enabling the voiceline option makes it unable to end, reason of which unsure as of now. But having it function as a sound effect works fine.")]
     [SerializeField] private List<AudioEvent> AttackEvents;
 
     [SerializeField] private AudioClip hasVisitedHouseOrTree;
@@ -68,10 +68,14 @@ public class AudioManager : MonoBehaviour
 
     private GameManager gameManager;
 
+    private int progressIndex = 0;
+
     private List<SoundObject> soundObjects = new();
     private Tile currentTile;
 
     private Player player;
+
+    private bool attack = false;
 
     [SerializeField] private List<AudioEvent> audioEvents = new();
 
@@ -107,8 +111,9 @@ public class AudioManager : MonoBehaviour
         EventManager.AddListener(EventType.EventStop, EndEvent);
         EventManager.AddListener(EventType.UnlockRadar, () => unlockedRadar = true);
         EventManager.AddListener(EventType.SwapMap, StopAllCoroutines);
-        EventManager.AddListener(EventType.Attack, CheckAttack);
+        EventManager.AddListener(EventType.Attack, () => attack = true);
         EventManager.AddListener(EventType.ShipEncounter, () => shipEncounter = true);
+        EventManager.AddListener(EventType.ShipProgressTrigger, CheckForProgressAdvancement);
     }
 
     public void OnMovement(List<SoundObject> soundObjects, Tile tile, bool player)
@@ -123,7 +128,82 @@ public class AudioManager : MonoBehaviour
 
     private void CheckForProgressAdvancement()
     {
+        switch (progressIndex)
+        {
+            //2 skip
+            case 0:
+                {
+                    SpaceShipEvents[progressIndex].TriggerAudioEvent(this, gameObject);
+                    break;
+                }
+            //2 regular
+            case 1:
+                {
+                    SpaceShipEvents[progressIndex].TriggerAudioEvent(this, gameObject);
+                    break;
+                }
+            //3 skip
+            case 2:
+                {
+                    SpaceShipEvents[progressIndex].TriggerAudioEvent(this, gameObject);
+                    break;
+                }
+            //3 regular
+            case 3:
+                {
+                    SpaceShipEvents[progressIndex].TriggerAudioEvent(this, gameObject);
+                    break;
+                }
+            //4 regular
+            case 4:
+                {
+                    SpaceShipEvents[progressIndex].TriggerAudioEvent(this, gameObject);
+                    break;
+                }
+            //Ending
+            case 5:
+                {
+                    SpaceShipEvents[progressIndex].TriggerAudioEvent(this, gameObject);
+                    break;
+                }
+        }
+    }
 
+    private bool[] ocurredCheck = new bool[4];
+
+    private void AdvanceProgress()
+    {
+        if ((progressIndex == 0 || progressIndex == 1) && ocurredCheck[0] == false)
+        {
+            ocurredCheck[0] = true;
+            if (player.HasVisitedHouseOrTree)
+            {
+                progressIndex = 0;
+            }
+            else
+            {
+                progressIndex = 1;
+            }
+        }
+        else if ((progressIndex == 2 || progressIndex == 3) && ocurredCheck[1] == false)
+        {
+            if (player.HasArtifact)
+            {
+                progressIndex = 2;
+            }
+            else
+            {
+                progressIndex = 3;
+            }
+        }
+        else if (ocurredCheck[2] == false)
+        {
+            progressIndex = 4;
+        }
+        else if (ocurredCheck[3] == false)
+        {
+            progressIndex = 5;
+        }
     }
 
     private void Start()
@@ -131,11 +211,6 @@ public class AudioManager : MonoBehaviour
         player = FindObjectOfType<Player>();
 
         gameManager = FindObjectOfType<GameManager>();
-
-        foreach (AudioEvent audioEvent in AttackEvents)
-        {
-            audioEvent.OnEventCompleted.AddListener(Attack);
-        }
 
         StartCoroutine(StartGame());
     }
@@ -162,27 +237,35 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void Attack(MapType mapType)
+    public void Attack()
     {
-        if (player.Health == 3)
+        Debug.Log(player.Health);
+        attack = false;
+        switch (player.Health)
         {
-            if (player.Position.x < gameManager.MapSize.x)
-            {
-                player.Position += new Vector2Int(1, 0);
-            }
-            player.Health -= 1;
-        }
-        else if (player.Health == 2)
-        {
-            if (player.Position.y > 0)
-            {
-                player.Position += new Vector2Int(0, -1);
-            }
-            player.Health -= 1;
-        }
-        else if (player.Health == 1)
-        {
-            player.Health -= 1;
+            case 3:
+                {
+                    if (player.Position.x < gameManager.MapSize.x)
+                    {
+                        player.Position += new Vector2Int(1, 0);
+                    }
+                    player.Health -= 1;
+                    break;
+                }
+            case 2:
+                {
+                    if (player.Position.y > 0)
+                    {
+                        player.Position += new Vector2Int(0, -1);
+                    }
+                    player.Health -= 1;
+                    break;
+                }
+            case 1:
+                {
+                    player.Health -= 1;
+                    break;
+                }
         }
     }
 
@@ -213,7 +296,15 @@ public class AudioManager : MonoBehaviour
 
             while (AudioClipPlayer.isPlaying) { yield return new WaitForSeconds(amountOfDelayBetweenVoicelines); }
 
-            CheckForAudioEvents(player, tile);
+            if (attack)
+            {
+                CheckAttack();
+            }
+            else
+            {
+                CheckForAudioEvents(player, tile);
+            }
+
             while (eventRunning)
             {
                 yield return null;

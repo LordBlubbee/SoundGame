@@ -52,6 +52,10 @@ public class AudioEvent
 
     public void TriggerAudioEvent(MonoBehaviour owner, GameObject audioSourceHolder)
     {
+        if (HasOccured) { return; }
+
+        audioSources.Clear();
+
         this.audioSourceHolder = audioSourceHolder;
         EventManager.InvokeEvent(EventType.EventStart);
 
@@ -138,7 +142,6 @@ public class AudioEvent
             if (soundEffects[i] == null) { continue; }
 
             AudioSource source = CheckForUnusedAudioSource(soundEffects[i].PlayedSequently);
-            source.volume = 0.5f;
 
             if (source != null)
             {
@@ -150,18 +153,17 @@ public class AudioEvent
                     yield return null;
                 }
             }
-
-            yield return new WaitForSeconds(0.5f);
         }
 
         if (!IsAnAudioSourcePlaying())
         {
+            Debug.Log("Event Ended.");
             foreach (AudioSource source in audioSources)
             {
                 UnityEngine.Object.Destroy(source);
             }
-            EventManager.InvokeEvent(EventType.EventStop);
             OnEventCompleted?.Invoke(mapTypeToSwitchTo);
+            EventManager.InvokeEvent(EventType.EventStop);
         }
     }
 }

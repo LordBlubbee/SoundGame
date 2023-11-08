@@ -137,6 +137,8 @@ public class GridManager
 
     public void SetEnemyPosition(Entity entity)
     {
+        if (entity.Position.x < 0 || entity.Position.x >= mapWidth || entity.Position.y < 0 || entity.Position.y >= mapHeight) { return; }
+
         if (entity.IsCreature && !entity.IsPlayer)
         {
             Tile currentTile = tiles[entity.Position.x, entity.Position.y];

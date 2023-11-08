@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour
 
     private List<Entity> entities = new();
 
+    public Player Player;
+
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -35,6 +37,8 @@ public class GameManager : MonoBehaviour
 
         GridManager = new(MapSize.x, MapSize.y, predefinedTilesForest, predefinedTilesMine, randomTileTypesForest, randomTileTypesMine, this);
         GridManager.OnMoveEntity += AudioManager.OnMovement;
+
+        Player = FindObjectOfType<Player>();
 
         EventManager.AddListener(EventType.StartGame, () => GridManager.GameStarted = true);
         EventManager.AddListener(EventType.Pause, () => GridManager.GamePaused = true);
@@ -77,5 +81,6 @@ public class GameManager : MonoBehaviour
     public void SwapMap(MapType type)
     {
         GridManager.SwapMap(type);
+        EventManager.InvokeEvent(EventType.SwapMap);
     }
 }

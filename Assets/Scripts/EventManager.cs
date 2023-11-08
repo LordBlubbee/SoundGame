@@ -13,6 +13,8 @@ public enum EventType
     GameOver = 8,
     ShipEncounter = 9,
     Attack = 10,
+    SpawnEnemyNearPlayer = 11,
+    ShipProgressTrigger = 12,
 }
 
 public static class EventManager
