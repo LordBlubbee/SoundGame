@@ -502,14 +502,14 @@ public class AudioManager : MonoBehaviour
         {
             if (soundObject.AudioClipDirection == null) { continue; }
 
-            if (!soundObject.Tile.Visited || soundObject.Tile.EntitiesInTile.Count >= 1)
+            if ((!soundObject.Tile.Visited || soundObject.Tile.EntitiesInTile.Count >= 1) && !spaceShipEvent)
             {
                 currentAudioClips.Add(soundObject.AudioClipDirection);
             }
 
             if (soundObject.AudioClipType == null) { continue; }
 
-            if (!soundObject.Tile.Visited)
+            if (!soundObject.Tile.Visited && !spaceShipEvent)
             {
                 currentAudioClips.Add(soundObject.AudioClipType);
             }
